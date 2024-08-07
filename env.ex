@@ -25,3 +25,6 @@ MAIL_PORT= 465
 
 
 DEFAULT_PASS=Pa$$word!
+
+
+vercel --prod
