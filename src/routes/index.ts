@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { newsRoutes } from "@/modules/news/news.routes";
+import newsRoutes from "../modules/news/news.routes";
 
 type IModulerRoutes = { path: string; route: Router }[];
 

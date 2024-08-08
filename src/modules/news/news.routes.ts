@@ -9,10 +9,12 @@ import {
   updateNewsController,
 } from "./news.controller";
 
-export const newsRoutes: Router = Router();
+const newsRoutes: Router = Router();
 
 newsRoutes.post("/news/create", createNewsController);
 newsRoutes.get("/news", getAllNewsController);
 newsRoutes.get("/news/:id", getNewsByIdController);
 newsRoutes.put("/news/:id", updateNewsController);
 newsRoutes.delete("/news/:id", deleteNewsController);
+
+export default newsRoutes;
