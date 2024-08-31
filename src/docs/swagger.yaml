@@ -18,13 +18,15 @@ servers:
     url: https://bdtime24.net/api/v1/
 tags:
   - name: HealthChecks
-    description: public Api Endpoints  And Autentation Perpose
+    description: public  Api Endpoints Health Checks
   - name: Authentications
     description: public Api Endpoints  And Autentation Perpose
-  - name: Posts
-    description: public Api Endpoints  And Autentation Perpose
-  - name: Blogs
-    description: public Api Endpoints  And Autentation Perpose
+  - name: Users
+    description: public Api Endpoints User Perpose
+  - name: Articless
+    description: public Api Endpoints Article Perpose
+  - name: Categories
+    description: public Api Endpoints  Category Perpose
 
 paths:
   /health:
@@ -34,7 +36,7 @@ paths:
         - HealthChecks
       responses:
         '200':
-          description: it will Return Success MEsssage
+          description: it will return success message
           content:
             application/json:
               schema:
@@ -42,7 +44,7 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: ok
+                    example: Server is Up and Running
   /auth/signup:
     post:
       description: For Creating An Account For Authentication
