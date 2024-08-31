@@ -57,11 +57,11 @@ paths:
               properties:
                 name:
                   type: string
-                  example: Mahamodul Hasan Moon
+                  example: zobaidulkazi
                 email:
                   type: string
                   format: email
-                  example: mahamodulhasan.moon@gmail.com
+                  example: zobaidulkazi@gmail.com
                 password:
                   type: string
                   format: password
@@ -99,13 +99,13 @@ paths:
                         example: /auth/signup
                       signin:
                         type: string
-                        example: /auth/login
+                        example: /auth/signin
 
         '400':
           $ref: '#/components/responses/400'
-  /auth/login:
+  /auth/signin:
     post:
-      description: For Login Any User
+      description: For Sign In With Email And Password || Phone Number and OTP
       tags: [Authentications]
       requestBody:
         content:
@@ -116,7 +116,7 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: mahamodulhasan.moon@gmail.com
+                  example: zobaidulkazi@gmail.com
                 password:
                   type: string
                   format: password
