@@ -5,8 +5,7 @@ export const baseUrl = process.env.BASE_URL;
 export const frontendUrl = process.env.FRONTEND_URL;
 export const port = process.env.PORT;
 // for Database Connection
-export const mongoUrl: string =
-  "mongodb+srv://exzobaidulkazi:tapMTRazUYw4mod6@cluster0.f143vc0.mongodb.net";
+export const mongoUrl: string = process.env.MONGO_URI || "";
 export const redisUrl: string = process.env.REDIS_URI || "";
 
 //  for Authencticaion and Security
