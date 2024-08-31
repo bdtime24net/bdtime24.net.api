@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title:  bdtime24.net API
+  title: bdtime24.net API
   version: 1.0.0
-  description:  bdtime24.net is a leading news source in Bangladesh, dedicated to providing comprehensive and up-to-the-minute news coverage 24 hours a day. As a top-level news platform, bdtime24.net ensures that its readers are always informed about the latest developments across various domains, including politics, economy, culture, sports, and international affairs.
+  description: bdtime24.net is a leading news source in Bangladesh, dedicated to providing comprehensive and up-to-the-minute news coverage 24 hours a day. As a top-level news platform, bdtime24.net ensures that its readers are always informed about the latest developments across various domains, including politics, economy, culture, sports, and international affairs.
   termsOfService: https://bdtime24.net.github.io/
   contact:
     name: Zobaidul Kazi
@@ -18,15 +18,15 @@ servers:
     url: https://bdtime24.net/api/v1/
 tags:
   - name: HealthChecks
-    description: public  Api Endpoints Health Checks
+    description: public Api Endpoints Health Checks
   - name: Authentications
-    description: public Api Endpoints  And Autentation Perpose
-  - name: Users
-    description: public Api Endpoints User Perpose
-  - name: Articless
-    description: public Api Endpoints Article Perpose
+    description: public Api Endpoints And Authentication Purpose
+  - name: Dashboards
+    description: public Api Endpoints Dashboards Purpose
+  - name: Articles
+    description: public Api Endpoints Article Purpose
   - name: Categories
-    description: public Api Endpoints  Category Perpose
+    description: public Api Endpoints Category Purpose
 
 paths:
   /health:
@@ -45,6 +45,7 @@ paths:
                   message:
                     type: string
                     example: Server is Up and Running
+
   /auth/signup:
     post:
       description: For Creating An Account For Authentication
@@ -103,6 +104,7 @@ paths:
 
         '400':
           $ref: '#/components/responses/400'
+
   /auth/signin:
     post:
       description: For Sign In With Email And Password || Phone Number and OTP
@@ -155,11 +157,164 @@ paths:
         '400':
           $ref: '#/components/responses/400'
 
-# make components
+  /auth/logout:
+    post:
+      description: For Logout
+      tags: [Authentications]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logged out Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    example: Logged out Successfully
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /auth/logout
+                      signin:
+                        type: string
+                        example: /auth/signin
+
+        '400':
+          $ref: '#/components/responses/400'
+
+  /dashboards:
+    get:
+      description: Authenticated User Can Get Dashboards Access Only
+      tags: [Dashboards]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dashboards Fetched Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Dashboards Fetched Successfully
+                  data:
+                    type: object
+                    properties:
+                      dashboards:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Dashboard'
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /dashboards
+
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+
+  /dashboards/analytics:
+    get:
+      description: Authenticated User Can Get Analytics Access Only
+      tags: [Dashboards]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Analytics Fetched Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Analytics Fetched Successfully
+                  data:
+                    type: object
+                    properties:
+                      analytics:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Dashboard'
+
+
+## Components
 
 components:
+  schemas:
+    Signup:
+      type: object
+      properties:
+        name:
+          type: string
+          example: zobaidulkazi
+        email:
+          type: string
+          format: email
+          example: zobaidulkazi@gmail.com
+        password:
+          type: string
+          format: password
+          example: password123
+
+    Signin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: zobaidulkazi@gmail.com
+        password:
+          type: string
+          format: password
+          example: password123
+
+    Dashboard:
+      type: object
+      properties:
+        name:
+          type: string
+          example: zobaidulkazi
+        email:
+          type: string
+          format: email
+          example: zobaidulkazi@gmail.com
+        avatar_url: 
+          type: string 
+          example: https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   responses:
-    '400':
+    "400":
       description: Bad Request
       content:
         application/json:
@@ -172,7 +327,7 @@ components:
                 example: 400
               error:
                 type: string
-                example: bad Request
+                example: Bad request
               data:
                 type: array
                 items:
@@ -183,4 +338,40 @@ components:
                       example: email
                     message:
                       type: string
-                      example: invalid Email
+                      example: Invalid email address
+
+    "401":
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                format: int32
+                example: 401
+              error:
+                type: string
+                example: Unauthorized
+              message:
+                type: string
+                example: Authentication token is missing or invalid
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                format: int32
+                example: 404
+              error:
+                type: string
+                example: Not Found
+              message:
+                type: string
+                example: The requested resource was not found
