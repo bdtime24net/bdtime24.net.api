@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import {
   signupService,
   signinService,
-  updateService,
   deleteAccountService,
-  changePasswordService,
+  updateService,
+  // changePasswordService,
 } from "./auth.service";
 import {
   changePasswordValidation,
@@ -77,13 +77,13 @@ export const signinController = async (
   }
 };
 
+// updateController function
 export const updateController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-    // Validate request body
     const parsedBody = updateValidation.safeParse(req.body);
     if (!parsedBody.success) {
       return res
@@ -91,16 +91,18 @@ export const updateController = async (
         .json({ error: parsedBody.error.errors[0].message });
     }
 
-    // Get user ID from request params or from authenticated user (depending on your auth setup)
-    const userId = req.params.id || req.user.id;
-
-    // Update user information
-    const updatedUser = await updateService(userId, parsedBody.data);
-
-    // Respond with the updated user data
+    const userId = req.params.id; // Assuming user ID is passed in URL params
+    const { user: updatedUser, token } = await updateService(
+      userId,
+      parsedBody.data
+    );
+    //  const { user, token } = await updateService(userId, parsedBody.data);
     res.status(200).json({
       success: true,
-      data: updatedUser,
+      data: {
+        user: updatedUser,
+        token: token,
+      },
       message: "User updated successfully",
       error: null,
     });
@@ -117,7 +119,7 @@ export const deleteAccountController = async (
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-    const userId = req.user.id; // Assuming user is authenticated
+    const userId = req.params.id; // Assuming user is authenticated
 
     await deleteAccountService(userId);
 
@@ -131,32 +133,30 @@ export const deleteAccountController = async (
   }
 };
 
+// // changePasswordController function
 
+// export const changePasswordController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<Response | void> => {
+//   try {
+//     const parsedBody = changePasswordValidation.safeParse(req.body);
+//     if (!parsedBody.success) {
+//       return res
+//         .status(400)
+//         .json({ error: parsedBody.error.errors[0].message });
+//     }
 
-// changePasswordController function
+//     const userId = req.user.id; // Assuming user is authenticated
+//     await changePasswordService(userId, parsedBody.data.password);
 
-export const changePasswordController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<Response | void> => {
-  try {
-    const parsedBody = changePasswordValidation.safeParse(req.body);
-    if (!parsedBody.success) {
-      return res
-        .status(400)
-        .json({ error: parsedBody.error.errors[0].message });
-    }
-
-    const userId = req.user.id; // Assuming user is authenticated
-    await changePasswordService(userId, parsedBody.data.password);
-
-    res.status(200).json({
-      success: true,
-      message: "Password changed successfully",
-      error: null,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       message: "Password changed successfully",
+//       error: null,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
