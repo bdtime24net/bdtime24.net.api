@@ -3,9 +3,8 @@
 import prisma from "../../utils/prisma";
 import { signupValidation } from "./auth.validaton";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
-import { signinValidation } from "./auth.validaton";
+import { Request } from "express";
+
 
 export const signupService = async (req: Request) => {
   // Validate request body
@@ -54,6 +53,8 @@ export const signupService = async (req: Request) => {
 
   return user;
 };
+
+
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
@@ -107,6 +108,8 @@ export const signinService = async (req: Request, res: Response) => {
   });
 
   return {
-    token,
+    id: user.id,
+    username: user.username,
+    email: user.email,
   };
 };

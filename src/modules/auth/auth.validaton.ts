@@ -18,6 +18,9 @@ export const signupValidation = z.object({
   }),
 });
 
+type IsignupValidation = z.infer<typeof signupValidation>;
+export type { IsignupValidation };
+
 // Define the Zod schema for IUser
 export const signinValidation = z.object({
   email: z
@@ -33,3 +36,6 @@ export const signinValidation = z.object({
     })
     .min(6, "Password must be at least 6 characters long"),
 });
+
+type IsigninValidation = z.infer<typeof signinValidation>;
+export type { IsigninValidation };
