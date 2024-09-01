@@ -1,3 +1,4 @@
+// src/modules/auth/auth.validation.ts
 import { z } from "zod";
 
 // Define the Zod schema for IUser
@@ -18,8 +19,8 @@ export const signupValidation = z.object({
   }),
 });
 
-type IsignupValidation = z.infer<typeof signupValidation>;
-export type { IsignupValidation };
+type Isignup = z.infer<typeof signupValidation>;
+export type { Isignup };
 
 // Define the Zod schema for IUser
 export const signinValidation = z.object({
@@ -37,5 +38,5 @@ export const signinValidation = z.object({
     .min(6, "Password must be at least 6 characters long"),
 });
 
-type IsigninValidation = z.infer<typeof signinValidation>;
-export type { IsigninValidation };
+type Isignin = z.infer<typeof signinValidation>;
+export type { Isignin };

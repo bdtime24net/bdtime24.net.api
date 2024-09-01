@@ -1,45 +1,31 @@
-// src/services/auth.service.ts
-
-import prisma from "../../utils/prisma";
-import { signupValidation } from "./auth.validaton";
+import { Isignin, Isignup } from "./auth.validaton";
 import bcrypt from "bcryptjs";
-import { Request } from "express";
+import prisma from "../../utils/prisma";
+import jwt from "jsonwebtoken";
 
-
-export const signupService = async (req: Request) => {
-  // Validate request body
-  const parsedBody = signupValidation.safeParse(req.body);
-  if (!parsedBody.success) {
-    throw {
-      status: 400,
-      success: false,
-      error: parsedBody.error,
-    };
+export const signupService = async (signupData: Isignup, req: any) => {
+  // check if user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: signupData.email,
+    },
+  });
+  if (existingUser) {
+    throw new Error("User already exists");
   }
+
+  // hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(signupData.password, salt);
 
   // Extract IP address and user agent
   const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const userAgent = req.headers["user-agent"] || "";
 
-  // Check if the user already exists
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      email: parsedBody.data.email,
-    },
-  });
-
-  if (existingUser) {
-    throw { status: 400, message: "User already exists" };
-  }
-
-  // Hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(parsedBody.data.password, salt);
-
-  // Create user in the database
+  // create user
   const user = await prisma.user.create({
     data: {
-      ...parsedBody.data,
+      ...signupData,
       password: hashedPassword,
       ipAddress,
       userAgent,
@@ -48,45 +34,34 @@ export const signupService = async (req: Request) => {
       id: true,
       username: true,
       email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
   return user;
 };
 
-
-
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
-
-export const signinService = async (req: Request, res: Response) => {
-  // Validate request body
-  const parsedBody = signinValidation.safeParse(req.body);
-  if (!parsedBody.success) {
-    throw {
-      status: 400,
-      success: false,
-      error: parsedBody.error,
-    };
-  }
-
-  const { email, password } = parsedBody.data;
-
-  // Check if the user exists
+export const signinService = async (signinData: Isignin, req: any) => {
+  // Find user by email
   const user = await prisma.user.findUnique({
     where: {
-      email,
+      email: signinData.email,
     },
   });
 
   if (!user) {
-    throw { status: 400, message: "Invalid email or password" };
+    throw new Error("Invalid email or password");
   }
 
-  // Compare password
-  const isPasswordValid = await bcrypt.compare(password, user.password);
+  // Verify password
+  const isPasswordValid = await bcrypt.compare(
+    signinData.password,
+    user.password
+  );
   if (!isPasswordValid) {
-    throw { status: 400, message: "Invalid email or password" };
+    throw new Error("Invalid email or password");
   }
 
   // Generate JWT token
@@ -94,22 +69,38 @@ export const signinService = async (req: Request, res: Response) => {
     {
       id: user.id,
       email: user.email,
-      username: user.username,
+      role: user.role,
     },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "7d", // 1 week
+    }
   );
 
-  // Set JWT as an HttpOnly cookie
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // secure flag for HTTPS only in production
-    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  // Extract IP address and user agent (optional)
+  const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const userAgent = req.headers["user-agent"] || "";
+
+  // Optionally update the last login time, IP address, and user agent
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      createdAt: new Date(),
+      ipAddress,
+      userAgent,
+    },
   });
 
+  // Return user data and token
   return {
-    id: user.id,
-    username: user.username,
-    email: user.email,
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    },
+    token,
   };
 };
