@@ -166,51 +166,93 @@ export const updateService = async (id: string, updateData: Iupdate) => {
 
 // delete account service
 export const deleteAccountService = async (userId: string) => {
+  // Find user by ID
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
   await prisma.user.delete({
     where: { id: userId },
   });
 };
 
-// // chenge password service
-// export const changePasswordService = async (
-//   userId: string,
-//   newPassword: string
-// ) => {
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(newPassword, salt);
+// chenge password service
+export const changePasswordService = async (
+  userId: string,
+  oldPassword: string,
+  newPassword: string
+) => {
+  // Fetch the user from the database
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
 
-//   await prisma.user.update({
-//     where: { id: userId },
-//     data: { password: hashedPassword },
-//   });
-// };
+  if (!user) {
+    throw new Error("User not found");
+  }
 
-// export const forgotPasswordService = async (email: string) => {
-//   const user = await prisma.user.findUnique({ where: { email } });
+  // Compare the old password with the stored hashed password
+  const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isPasswordMatch) {
+    throw new Error("Old password is incorrect");
+  }
 
-//   if (!user) {
-//     throw new Error("User not found");
-//   }
+  // Hash the new password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-//   // Generate password reset token
-//   const resetToken = crypto.randomBytes(20).toString("hex");
-//   const resetTokenExpiry = Date.now() + 3600000; // Token expires in 1 hour
+  // Update the user's password
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
+};
 
-//   // Save token to the database
-//   await prisma.user.update({
-//     where: { email },
-//     data: {
-//       resetPasswordToken: resetToken as any,
-//       resetPasswordExpires: new Date(resetTokenExpiry),
-//     },
-//   });
 
-//   const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
 
-//   // Send email
-//   await sendEmail({
-//     to: email,
-//     subject: "Password Reset Request",
-//     text: `You requested a password reset. Click here to reset your password: ${resetUrl}`,
-//   });
-// };
+// forgot password service
+
+export const forgotPasswordService = async (email: string) => {
+  // Find user by email
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Generate password reset token
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  const resetTokenExpiry = Date.now() + 3600000; // Token expires in 1 hour
+
+  // Save token to the database
+  await prisma.user.update({
+    where: { email },
+    data: {
+      resetPasswordToken: resetToken,
+      resetPasswordExpires: new Date(resetTokenExpiry),
+    },
+  });
+
+  // Construct the password reset URL
+  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+
+  // Send the password reset email
+  await sendEmail({
+    to: email,
+    subject: "Password Reset Request",
+    text: `You requested a password reset. Click here to reset your password: ${resetUrl}`,
+  });
+};

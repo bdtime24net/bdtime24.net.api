@@ -1,43 +1,37 @@
-// utils/Error.ts
+class HTTPError extends Error {
+  status: number;
 
-export class BadRequestError extends Error {
-  statusCode: number;
-
-  constructor(message: string) {
+  constructor(message: string, status: number) {
     super(message);
-    this.name = "BadRequestError";
-    this.statusCode = 400;
+    this.status = status;
+    // Ensure the error class name is correct in stack traces
+    this.name = this.constructor.name;
   }
 }
 
-export class ConflictError extends Error {
-  statusCode: number;
+export const notFound = (msg = "Resource not found") => {
+  return new HTTPError(msg, 404);
+};
 
-  constructor(message: string) {
-    super(message);
-    this.name = "ConflictError";
-    this.statusCode = 409;
-  }
+export const badRequest = (msg = "Bad Request") => {
+  return new HTTPError(msg, 400);
+};
+
+export const serverError = (msg = "Internal Server Error") => {
+  return new HTTPError(msg, 500);
+};
+
+export const authenticationError = (msg = "Authentication Failed") => {
+  return new HTTPError(msg, 401);
+};
+
+export const authorizationError = (msg = "Permission Denied") => {
+  return new HTTPError(msg, 403);
+};
+
+export function invalidInput(invalidInput: any) {
+  throw new Error("Function not implemented.");
 }
-
-export class UnauthorizedError extends Error {
-  statusCode: number;
-
-  constructor(message: string) {
-    super(message);
-    this.name = "UnauthorizedError";
-    this.statusCode = 401;
-  }
+export function unauthorized(unauthorized: any) {
+  throw new Error("Function not implemented.");
 }
-
-export class ForbiddenError extends Error {
-  statusCode: number;
-
-  constructor(message: string) {
-    super(message);
-    this.name = "ForbiddenError";
-    this.statusCode = 403;
-  }
-}
-
-// You can add more custom error classes as needed

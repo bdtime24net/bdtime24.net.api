@@ -4,7 +4,8 @@ import {
   signinService,
   deleteAccountService,
   updateService,
-  // changePasswordService,
+  changePasswordService,
+  forgotPasswordService,
 } from "./auth.service";
 import {
   changePasswordValidation,
@@ -22,9 +23,7 @@ export const signupController = async (
     // Validate request body
     const parsedBody = signupValidation.safeParse(req.body);
     if (!parsedBody.success) {
-      return res
-        .status(400)
-        .json({ error: parsedBody.error.errors[0].message });
+      return res.status(400).json({ error: parsedBody.error.errors });
     }
 
     const user = await signupService(parsedBody.data, req);
@@ -49,9 +48,7 @@ export const signinController = async (
     // Validate request body
     const parsedBody = signinValidation.safeParse(req.body);
     if (!parsedBody.success) {
-      return res
-        .status(400)
-        .json({ error: parsedBody.error.errors[0].message });
+      return res.status(400).json({ error: parsedBody.error.errors });
     }
 
     // Authenticate user and generate JWT
@@ -119,7 +116,15 @@ export const deleteAccountController = async (
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-    const userId = req.params.id; // Assuming user is authenticated
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+        error: null,
+      });
+    }
 
     await deleteAccountService(userId);
 
@@ -133,30 +138,56 @@ export const deleteAccountController = async (
   }
 };
 
-// // changePasswordController function
+// changePasswordController function
+export const changePasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const parsedBody = changePasswordValidation.safeParse(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ error: parsedBody.error.errors });
+    }
 
-// export const changePasswordController = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<Response | void> => {
-//   try {
-//     const parsedBody = changePasswordValidation.safeParse(req.body);
-//     if (!parsedBody.success) {
-//       return res
-//         .status(400)
-//         .json({ error: parsedBody.error.errors[0].message });
-//     }
+    const userId = req.params.id;
+    await changePasswordService(
+      userId,
+      parsedBody.data.oldPassword,
+      parsedBody.data.newPassword
+    );
 
-//     const userId = req.user.id; // Assuming user is authenticated
-//     await changePasswordService(userId, parsedBody.data.password);
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-//     res.status(200).json({
-//       success: true,
-//       message: "Password changed successfully",
-//       error: null,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+// forgetPasswordController
+
+export const forgotPasswordController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const { email } = req.body;
+
+    // Call the forgot password service
+    await forgotPasswordService(email);
+
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Password reset email sent",
+      error: null,
+    });
+  } catch (error) {
+    // Forward the error to the error-handling middleware
+    next(error);
+  }
+};
