@@ -25,6 +25,8 @@ model User {
   username  String
   email     String    @unique
   password  String
+  ipAddress String
+  userAgent String
   role      Role      @default(USER)
   articles  Article[]
   createdAt DateTime  @default(now())
@@ -49,5 +51,3 @@ model Tag {
   articles  Article[] @relation("ArticleTags")
   createdAt DateTime  @default(now())
 }
-
-

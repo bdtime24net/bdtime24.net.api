@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import middleware from "./middleware";
 import routes from "./routes";
 import YAML from "yamljs";
+import cookieParser from "cookie-parser";
 import swaggerUI from "swagger-ui-express";
 import { errorHandler } from "./errors";
 import { notFoundHandler } from "../errors/notFoundError";
@@ -16,5 +17,7 @@ app.use(middleware);
 app.use("/api", routes);
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+app.use(cookieParser());
 
 export default app;
