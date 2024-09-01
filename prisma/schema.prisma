@@ -21,16 +21,20 @@ enum Role {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  username  String
-  email     String    @unique
-  password  String
-  ipAddress String
-  userAgent String
-  role      Role      @default(USER)
-  articles  Article[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                   String    @id @default(cuid())
+  username             String
+  email                String    @unique
+  password             String
+  ipAddress            String
+  userAgent            String
+  role                 Role      @default(USER)
+  articles             Article[]
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  resetPasswordToken   String? // Optional field
+  resetPasswordExpires DateTime? // Optional field
+
+  @@map("User")
 }
 
 model Article {

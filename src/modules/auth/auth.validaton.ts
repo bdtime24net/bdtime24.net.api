@@ -40,3 +40,50 @@ export const signinValidation = z.object({
 
 type Isignin = z.infer<typeof signinValidation>;
 export type { Isignin };
+
+// Define the Zod schema for IUser
+export const updateValidation = z.object({
+  username: z
+    .string({
+      invalid_type_error: "Username must be a string",
+    })
+    .min(1, "Username cannot be empty"),
+  email: z
+    .string({
+      invalid_type_error: "Email must be a string",
+    })
+    .email("Invalid email address"),
+  role: z
+    .string({
+      invalid_type_error: "Role must be a string",
+    })
+    .optional(),
+});
+
+export type Iupdate = z.infer<typeof updateValidation>;
+
+// Forgot Password Validation
+export const forgotPasswordValidation = z.object({
+  email: z
+    .string({
+      required_error: "Email is required",
+      invalid_type_error: "Email must be a string",
+    })
+    .email("Invalid email address"),
+});
+
+type IforgotPassword = z.infer<typeof forgotPasswordValidation>;
+export type { IforgotPassword };
+
+// Change Password Validation
+export const changePasswordValidation = z.object({
+  password: z
+    .string({
+      required_error: "Password is required",
+      invalid_type_error: "Password must be a string",
+    })
+    .min(6, "Password must be at least 6 characters long"),
+});
+
+type IchangePassword = z.infer<typeof changePasswordValidation>;
+export type { IchangePassword };
