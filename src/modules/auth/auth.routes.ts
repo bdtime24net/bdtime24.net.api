@@ -9,16 +9,17 @@ import {
   forgotPasswordController,
 } from "./auth.controller";
 
+import veryfyToken from "./auth.middleware";
+
 const authRoutes: Router = Router();
 
 authRoutes.post("/signup", signupController);
 authRoutes.post("/signin", signinController);
 
-authRoutes.put("/update/:id", updateController);
-authRoutes.put("/change-password/:id", changePasswordController);
-authRoutes.delete("/delete/:id", deleteAccountController);
+authRoutes.put("/update/:id", veryfyToken, updateController);
+authRoutes.put("/change-password/:id", veryfyToken, changePasswordController);
+authRoutes.delete("/delete/:id", veryfyToken, deleteAccountController);
 
 authRoutes.post("/forgot-password", forgotPasswordController);
-
 
 export default authRoutes;
