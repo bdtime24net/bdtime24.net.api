@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "ts-node-dev -r tsconfig-paths/register ./src/index.ts",
     "build": "tsc & tsc-alias",
-    "vercel-build": "npm run build",
+    "vercel-build1": "npm run build",
     "start": "node dist/index.js",
-    "migrate": "npx prisma migrate dev"
+    "migrate": "npx prisma migrate dev",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "keywords": [],
   "author": "",

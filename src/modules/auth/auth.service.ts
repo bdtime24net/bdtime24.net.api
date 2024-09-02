@@ -4,6 +4,7 @@ import prisma from "../../utils/prisma";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../utils/sendEmail"; // Assume you have an email sending utility
 import crypto from "crypto";
+import { generateJWT } from "../../utils/generateJWT";
 
 export const signupService = async (signupData: Isignup, req: any) => {
   // check if user already exists
@@ -45,6 +46,7 @@ export const signupService = async (signupData: Isignup, req: any) => {
   return user;
 };
 
+// signin service
 export const signinService = async (signinData: Isignin, req: any) => {
   // Find user by email
   const user = await prisma.user.findUnique({
@@ -67,17 +69,7 @@ export const signinService = async (signinData: Isignin, req: any) => {
   }
 
   // Generate JWT token
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: "7d", // 1 week
-    }
-  );
+  const token = generateJWT({ id: user.id });
 
   // Extract IP address and user agent (optional)
   const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
@@ -220,8 +212,6 @@ export const changePasswordService = async (
     data: { password: hashedPassword },
   });
 };
-
-
 
 // forgot password service
 

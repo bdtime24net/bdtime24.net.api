@@ -66,9 +66,12 @@ export const forgotPasswordValidation = z.object({
 type IforgotPassword = z.infer<typeof forgotPasswordValidation>;
 export type { IforgotPassword };
 
-
-  // Zod schema for validating the password change request
+// Zod schema for validating the password change request
 export const changePasswordValidation = z.object({
-  oldPassword: z.string().min(6, 'Old password must be at least 6 characters long'),
-  newPassword: z.string().min(6, 'New password must be at least 6 characters long'),
+  oldPassword: z
+    .string()
+    .min(6, "Old password must be at least 6 characters long"),
+  newPassword: z
+    .string()
+    .min(6, "New password must be at least 6 characters long"),
 });
