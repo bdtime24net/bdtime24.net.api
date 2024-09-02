@@ -79,7 +79,6 @@ export const signinService = async (signinData: Isignin, req: any) => {
   await prisma.user.update({
     where: { id: user.id },
     data: {
-      createdAt: new Date(),
       ipAddress,
       userAgent,
     },

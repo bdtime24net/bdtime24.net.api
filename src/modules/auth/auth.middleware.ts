@@ -11,18 +11,24 @@ const veryfyToken = (req: any, res: any, next: any) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const secret = (process.env.JWT_SECRET as string) || "secret";
+    const secret = process.env.JWT_SECRET as string;
+    const algorithm = "HS384";
 
-    jwt.verify(token, secret, (err: any, decoded: any) => {
-       if (err) {
-         if (err.name === "TokenExpiredError") {
-           return res.status(401).json({ message: "Token expired" });
-         }
-         return res.status(401).json({ message: "Invalid token" });
-       }
-      req.user = decoded;
-      next();
-    });
+    jwt.verify(
+      token,
+      secret,
+      { algorithms: [algorithm] },
+      (err: any, decoded: any) => {
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ message: "Token expired" });
+          }
+          return res.status(401).json({ message: "Invalid token" });
+        }
+        req.user = decoded;
+        next();
+      }
+    );
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
