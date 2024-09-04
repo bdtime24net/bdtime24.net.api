@@ -245,3 +245,13 @@ export const forgotPasswordService = async (email: string) => {
     text: `You requested a password reset. Click here to reset your password: ${resetUrl}`,
   });
 };
+
+// src/services/auth/logoutService.ts
+export const logoutService = async (req: any, res: any): Promise<void> => {
+  // Clear the token cookie
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Secure in production
+    sameSite: "strict",
+  });
+};

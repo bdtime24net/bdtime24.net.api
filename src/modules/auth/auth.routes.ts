@@ -7,6 +7,7 @@ import {
   changePasswordController,
   deleteAccountController,
   forgotPasswordController,
+  logoutController,
 } from "./auth.controller";
 
 import veryfyToken from "./auth.middleware";
@@ -21,5 +22,7 @@ authRoutes.put("/change-password/:id", veryfyToken, changePasswordController);
 authRoutes.delete("/delete/:id", veryfyToken, deleteAccountController);
 
 authRoutes.post("/forgot-password", forgotPasswordController);
+
+authRoutes.post("/logout", veryfyToken, logoutController);
 
 export default authRoutes;

@@ -6,6 +6,7 @@ import {
   updateService,
   changePasswordService,
   forgotPasswordService,
+  logoutService,
 } from "./auth.service";
 import {
   changePasswordValidation,
@@ -189,6 +190,28 @@ export const forgotPasswordController = async (
     });
   } catch (error) {
     // Forward the error to the error-handling middleware
+    next(error);
+  }
+};
+
+
+
+export const logoutController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    // Call the logout service to clear the cookies
+    await logoutService(req, res);
+
+    // Respond with a success message
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+      error: null,
+    });
+  } catch (error) {
     next(error);
   }
 };
