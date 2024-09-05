@@ -1,12 +1,15 @@
 import { z } from "zod";
 
 export const articleValidationSchema = z.object({
-  id: z.string().optional(),
-  authorId: z.string(),
-  title: z.string().min(1, "Title is required"),
-  content: z.string().min(1, "Content is required"),
-  published: z.boolean().optional().default(false),
-  createdAt: z.date().optional().default(new Date()),
-  updatedAt: z.date().optional().default(new Date()),
-  tags: z.array(z.string()).optional(),
+  title: z.string(),
+  content: z.string(),
+  authorId: z.string().optional(),
+  sourceName: z.string().optional(),
+  author: z.string().optional(),
+  url: z.string().optional(),
+  urlToImage: z.string().optional(),
+  categoryId: z.number(),
+  tagId: z.string().optional(),
 });
+
+export type IArticle = z.infer<typeof articleValidationSchema>;
