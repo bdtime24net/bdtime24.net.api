@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const ArticleSchema = z.object({
-  title: z
+  headline: z
     .string({
-      required_error: "Title is required",
-      invalid_type_error: "Title must be a string",
+      required_error: "Headline is required",
+      invalid_type_error: "Headline must be a string",
     })
-    .min(1, "Title cannot be empty"),
-
+    .min(1, "Headline cannot be empty"),
+    keywords: z.array(z.string()).optional(),
     description: z
     .string({
       required_error: "Description is required",
@@ -28,11 +28,7 @@ export const ArticleSchema = z.object({
     .min(1, "Url cannot be empty"),
 
     urlToImage: z
-    .string({
-      required_error: "Url to image is required",
-      invalid_type_error: "Url to image must be a string",
-    })
-    .min(1, "Url to image cannot be empty"),
+    .array(z.string()).optional(),
     categoryId: z
     .string({
       required_error: "Category id is required",

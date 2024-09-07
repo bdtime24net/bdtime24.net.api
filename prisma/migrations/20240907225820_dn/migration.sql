@@ -29,11 +29,12 @@ CREATE TABLE "NewsCategory" (
 -- CreateTable
 CREATE TABLE "Article" (
     "id" TEXT NOT NULL,
+    "headline" TEXT NOT NULL,
+    "keywords" TEXT[],
     "sourceName" TEXT,
-    "title" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "urlToImage" TEXT,
-    "description" TEXT,
+    "urlToImage" TEXT[],
+    "description" TEXT NOT NULL,
     "categoryId" TEXT NOT NULL,
     "userId" TEXT,
     "tagId" TEXT NOT NULL,

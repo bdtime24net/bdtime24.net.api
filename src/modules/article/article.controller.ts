@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createArticleService, getArticlesService } from "./article.service";
+import { createArticleService, deleteArticleService, getArticleByIdService, getArticlesService, updateArticleService } from "./article.service";
 import { ArticleSchema, GetArticlesOptionsSchema } from "./article.validation";
 
 // Controller function to create a new article
@@ -76,12 +76,88 @@ export const getArticlesController = async (
 
     return res.status(200).json({
       success: true,
-      data: result.articles,
       totalCount: result.totalCount,
       totalPages: result.totalPages,
       nextLink: result.nextLink,
       prevLink: result.prevLink,
       message: "Articles retrieved successfully",
+      error: null,
+      data: result.articles,
+     
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+// Controller function to get a single article
+export const getArticleByIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const { id } = req.params;
+    const article = await getArticleByIdService(id);
+    return res.status(200).json({
+      success: true,
+      data: article,
+      message: "Article retrieved successfully",
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+// Controller function to update a article
+export const updateArticleController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const { id } = req.params;
+    const parsedBody = ArticleSchema.safeParse(req.body);
+    if (!parsedBody.success) {
+      return res.status(400).json({ error: parsedBody.error.message });
+    }
+    const article = await updateArticleService(id, parsedBody.data);
+    return res.status(200).json({
+      success: true,
+      data: article,
+      message: "Article updated successfully",
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  } 
+};
+
+
+// Controller function to delete a article
+export const deleteArticleController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  try {
+    const { id } = req.params;
+    
+
+    if (!id) {
+      return res.status(400).json({ error: "Article ID is required" });
+    }
+
+    const article = await deleteArticleService(id);
+    return res.status(200).json({
+      success: true,
+      data: article,
+      message: "Article deleted successfully",
       error: null,
     });
   } catch (error) {

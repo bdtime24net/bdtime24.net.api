@@ -45,11 +45,12 @@ model NewsCategory {
 
 model Article {
   id          String       @id @default(cuid())
+  headline    String 
+  keywords    String[]
   sourceName  String?
-  title       String  @unique
   url         String
-  urlToImage  String?
-  description     String?  
+  urlToImage  String[]
+  description String
   categoryId  String
   category    NewsCategory @relation(fields: [categoryId], references: [id])
   User        User?        @relation(fields: [userId], references: [id])

@@ -4,10 +4,9 @@ import { IArticle, IGetArticlesOptions } from "./article.validation";
 // Service function to create a new article
 export const createArticleService = async (aeticleData: IArticle) => {
 //  // check if the article already exists
- const existingArticle = await prisma.article.findUnique({
+ const existingArticle = await prisma.article.findFirst({
   where: {
-   title: aeticleData.title,
-   description: aeticleData.description
+   headline: aeticleData.headline
   }
  }) 
  
@@ -21,7 +20,7 @@ export const createArticleService = async (aeticleData: IArticle) => {
    ...aeticleData,
    } as any,
   select: {
-   title: true
+    headline: true
   }
  });
  return article;
@@ -109,4 +108,42 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     nextLink,
     prevLink
   };
+};
+
+
+
+// Service function to get a single article
+export const getArticleByIdService = async (id: string) => {
+  const article = await prisma.article.findUnique({
+    where: { id },
+  });
+  if (!article) {
+    throw new Error("Article not found");
+  }
+  return article;
+};
+
+
+// Service function to update a article
+export const updateArticleService = async (id: string, articleData: IArticle) => {
+  const article = await prisma.article.update({
+    where: { id },
+    data: articleData,
+  });
+  if (!article) {
+    throw new Error("Article not found");
+  }
+  return article;
+};
+
+
+// Service function to delete a article
+export const deleteArticleService = async (id: string) => {
+  const article = await prisma.article.delete({
+    where: { id },
+  });
+  if (!article) {
+    throw new Error("Article not found");
+  }
+  return article;
 };
