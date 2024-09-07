@@ -12,28 +12,28 @@ info:
     name: Apache License, Version 2.0
     url: https://apache.com
 servers:
-  - description: Development
-    url: https://localhost:8000/api/v1
-  - description: Production
-    url: https://bdtime24.net/api/v1/
+- description: Development
+  url: https://localhost:8000/api/v1
+- description: Production
+  url: https://bdtime24.net/api/v1/
 tags:
-  - name: HealthChecks
-    description: public Api Endpoints Health Checks
-  - name: Authentications
-    description: public Api Endpoints And Authentication Purpose
-  - name: Dashboards
-    description: public Api Endpoints Dashboards Purpose
-  - name: Articles
-    description: public Api Endpoints Article Purpose
-  - name: Categories
-    description: public Api Endpoints Category Purpose
+- name: HealthChecks
+  description: public Api Endpoints Health Checks
+- name: Authentications
+  description: public Api Endpoints And Authentication Purpose
+- name: Dashboards
+  description: public Api Endpoints Dashboards Purpose
+- name: Articles
+  description: public Api Endpoints Article Purpose
+- name: Categories
+  description: public Api Endpoints Category Purpose
 
 paths:
   /health:
     get:
       description: Testing For Server Health
       tags:
-        - HealthChecks
+      - HealthChecks
       responses:
         '200':
           description: it will return success message
@@ -56,7 +56,7 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                username:
                   type: string
                   example: zobaidulkazi
                 email:
@@ -68,9 +68,9 @@ paths:
                   format: password
                   example: password123
               required:
-                - name
-                - email
-                - password
+              - username
+              - email
+              - password
       responses:
         '201':
           description: Successfully Created Account
@@ -124,8 +124,8 @@ paths:
                   format: password
                   example: password123
               required:
-                - email
-                - password
+              - email
+              - password
       responses:
         '200':
           description: Logged in Successfully
@@ -157,12 +157,112 @@ paths:
         '400':
           $ref: '#/components/responses/400'
 
+  /auth/update: # update route
+    post:
+      description: For Update User Details
+      tags: [Authentications]
+      security:
+      - bearerAuth: []
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: zobaidulkazi
+                role:
+                  type: string
+                  example: admin
+              required:
+              - name
+              - role
+      responses:
+        '200':
+          description: User Details Updated Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: User Details Updated Successfully
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: iIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  links:
+
+        '400':
+          $ref: '#/components/responses/400'
+
+  /auth/change-password: # # change-password
+    post:
+      description: For Change Password
+      tags: [Authentications]
+      security:
+      - bearerAuth: []
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                oldPassword:
+                  type: string
+                  format: password
+                  example: password123
+                newPassword:
+                  type: string
+                  format: password
+                  example: password123
+              required:
+              - oldPassword
+              - newPassword
+
+      responses:
+        '200':
+          description: Password Changed Successfully
+        '400':
+          $ref: '#/components/responses/400'
+
+  /auth/forget-password:
+    post:
+      description: For Forget Password
+      tags: [Authentications]
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: zobaidulkazi@gmail.com
+              required:
+              - email
+      responses:
+        '200':
+          description: Password Changed Successfully
+        '400':
+          $ref: '#/components/responses/400'
+
+
   /auth/logout:
     post:
       description: For Logout
       tags: [Authentications]
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: Logged out Successfully
@@ -195,7 +295,7 @@ paths:
       description: Authenticated User Can Get Dashboards Access Only
       tags: [Dashboards]
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: Dashboards Fetched Successfully
@@ -237,7 +337,7 @@ paths:
       description: Authenticated User Can Get Analytics Access Only
       tags: [Dashboards]
       security:
-        - bearerAuth: []
+      - bearerAuth: []
       responses:
         '200':
           description: Analytics Fetched Successfully
@@ -303,8 +403,8 @@ components:
           type: string
           format: email
           example: zobaidulkazi@gmail.com
-        avatar_url: 
-          type: string 
+        avatar_url:
+          type: string
           example: https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50
 
   securitySchemes:
