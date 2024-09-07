@@ -38,7 +38,7 @@ model User {
 }
 
 model NewsCategory {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid())
   name         String    @unique
   status       String
   totalResults Int
@@ -46,21 +46,20 @@ model NewsCategory {
 }
 
 model Article {
-  id          Int          @id @default(autoincrement())
+  id          String       @id @default(cuid())
   sourceName  String?
   title       String
-  description String?
   url         String
   urlToImage  String?
-  publishedAt DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
   content     String?
-  categoryId  Int
+  categoryId  String
   category    NewsCategory @relation(fields: [categoryId], references: [id])
   User        User?        @relation(fields: [userId], references: [id])
   userId      String?
   Tag         Tag?         @relation(fields: [tagId], references: [id])
   tagId       String
+  publishedAt DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Tag {

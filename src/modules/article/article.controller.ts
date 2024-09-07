@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createArticleService } from "./article.service";
-import { articleValidationSchema } from "./article.validation";
+import { ArticleSchema } from "./article.validation";
 
 // Controller function to create a new article
 export const createArticleController = async (
@@ -10,22 +10,22 @@ export const createArticleController = async (
 ) => {
   try {
     // Parse and validate the request body
-    const parsedBody = articleValidationSchema.safeParse(req.body);
+    const parsedBody = ArticleSchema.safeParse(req.body);
 
     if (!parsedBody.success) {
-      return res
-        .status(400)
-        .json({ error: parsedBody.error.errors[0].message });
+      return res.status(400).json({ error: parsedBody.error });
     }
 
     const articleData = parsedBody.data;
 
-    // Use service to create the new article
-    const newArticle = await createArticleService(articleData);
+    console.log(articleData);
+
+    // // Use service to create the new article
+    // const newArticle = await createArticleService(articleData);
 
     return res.status(201).json({
       message: "Article created successfully",
-      data: newArticle,
+      // data: newArticle,
     });
   } catch (error) {
     next(error);
