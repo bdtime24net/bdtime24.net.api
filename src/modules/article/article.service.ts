@@ -4,15 +4,16 @@ import { IArticle } from "./article.validation";
 // Service function to create a new article
 export const createArticleService = async (aeticleData: IArticle) => {
 //  // check if the article already exists
-//  const existingArticle = await prisma.article.findUnique({
-//   where: {
-//    title: aeticleData.title
-//   } as any
-//  }) 
+ const existingArticle = await prisma.article.findUnique({
+  where: {
+   title: aeticleData.title,
+   description: aeticleData.description
+  }
+ }) 
  
-//  if (existingArticle) {
-//    throw new Error("Article already exists");
-//  }
+ if (existingArticle) {
+  throw new Error("Article already exists");
+ }
 
  // create article
  const article = await prisma.article.create({
