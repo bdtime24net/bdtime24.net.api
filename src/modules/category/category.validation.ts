@@ -8,4 +8,4 @@ export const categoryValidationSchema = z.object({
     }),
 });
 
-export type Icategory = z.infer<typeof categoryValidationSchema>;
+export type ICategory = z.infer<typeof categoryValidationSchema>;

@@ -6,3 +6,5 @@ export const tagValidationSchema = z.object({
         invalid_type_error: "Name must be a string",
     }),
 });
+
+export type ITag = z.infer<typeof tagValidationSchema>;

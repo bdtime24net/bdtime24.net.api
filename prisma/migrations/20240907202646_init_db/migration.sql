@@ -22,8 +22,6 @@ CREATE TABLE "User" (
 CREATE TABLE "NewsCategory" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
-    "totalResults" INTEGER NOT NULL,
 
     CONSTRAINT "NewsCategory_pkey" PRIMARY KEY ("id")
 );
@@ -35,7 +33,7 @@ CREATE TABLE "Article" (
     "title" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "urlToImage" TEXT,
-    "content" TEXT,
+    "description" TEXT,
     "categoryId" TEXT NOT NULL,
     "userId" TEXT,
     "tagId" TEXT NOT NULL,

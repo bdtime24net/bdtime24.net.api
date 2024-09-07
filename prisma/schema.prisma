@@ -40,8 +40,6 @@ model User {
 model NewsCategory {
   id           String    @id @default(cuid())
   name         String    @unique
-  status       String
-  totalResults Int
   articles     Article[]
 }
 
