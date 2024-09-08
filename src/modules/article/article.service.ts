@@ -88,7 +88,15 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     select: fields.length > 0 ? fields.reduce((acc, field) => {
      
       return acc;
-    }, {}) : undefined,
+    }, {
+      id: true,
+      title: true,
+      description: true,
+      category: true,
+      author: true,
+      publishedAt: true,
+      updatedAt: true
+    }) : undefined,
     orderBy: {
       [sortField]: sort.order,
     },
