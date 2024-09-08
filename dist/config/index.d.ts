@@ -5,7 +5,7 @@ export declare const frontendUrl: string | undefined;
 export declare const port: string | undefined;
 export declare const mongoUrl: string;
 export declare const redisUrl: string;
-export declare const corsOrigin: string | undefined;
+export declare const corsOrigin: string;
 export declare const access_token: string;
 export declare const refresh_token: string;
 export declare const defaultPass: string | undefined;

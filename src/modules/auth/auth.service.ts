@@ -69,7 +69,14 @@ export const signinService = async (signinData: Isignin, req: any) => {
   }
 
   // Generate JWT token
-  const token = generateJWT({ id: user.id });
+  const token = generateJWT({
+    id: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  });
 
   // Extract IP address and user agent (optional)
   const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;

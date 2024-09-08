@@ -55,7 +55,14 @@ const signinService = async (signinData, req) => {
     if (!isPasswordValid) {
         throw new Error("Invalid email or password");
     }
-    const token = (0, generateJWT_1.generateJWT)({ id: user.id });
+    const token = (0, generateJWT_1.generateJWT)({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+    });
     const ipAddress = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
     const userAgent = req.headers["user-agent"] || "";
     await prisma_1.default.user.update({
