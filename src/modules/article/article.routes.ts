@@ -12,9 +12,9 @@ articleRoutes.get("/article", getArticlesController);
 
 articleRoutes.get("/article/:id", getArticleByIdController);
 
-articleRoutes.put("/article/:id", updateArticleController);
+articleRoutes.put("/article/:id", veryfyToken, updateArticleController);
 
-articleRoutes.delete("/article/:id", deleteArticleController);
+articleRoutes.delete("/article/:id", veryfyToken, deleteArticleController);
 
 
 
