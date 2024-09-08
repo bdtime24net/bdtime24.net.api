@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const tagsRoutes: Router = Router();
 import {createTageController, getTagsController, deleteTagController, updateTagController} from './tag.controller'
-import veryfyToken from "@/middlewares/auth.middleware";
+import veryfyToken from "../../middlewares/auth.middleware";
 
 
 tagsRoutes.post("/tag/create", veryfyToken, createTageController);

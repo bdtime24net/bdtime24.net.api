@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createArticleController, getArticlesController, getArticleByIdController, updateArticleController, deleteArticleController } from "./article.controller";
-import veryfyToken from '@/middlewares/auth.middleware'
+import veryfyToken from '../../middlewares/auth.middleware'
 
 
 

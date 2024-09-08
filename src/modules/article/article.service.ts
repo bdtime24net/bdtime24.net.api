@@ -86,7 +86,7 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     skip,
     take: limit,
     select: fields.length > 0 ? fields.reduce((acc, field) => {
-      acc[field] = true;
+     
       return acc;
     }, {}) : undefined,
     orderBy: {

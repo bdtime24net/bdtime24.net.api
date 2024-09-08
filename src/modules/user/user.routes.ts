@@ -1,4 +1,4 @@
-import  veryfyToken  from '@/middlewares/auth.middleware';
+import  veryfyToken  from '../../middlewares/auth.middleware';
 import { Router } from "express";
 
 const userRoutes: Router = Router();

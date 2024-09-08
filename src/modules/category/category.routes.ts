@@ -1,6 +1,6 @@
 import { Router } from "express";
 const categoryRoutes: Router = Router();
-import veryfyToken from "@/middlewares/auth.middleware";
+import veryfyToken from "../../middlewares/auth.middleware";
 
 import {categoryController, getCategoriesController, deleteCategoryController, updateCategoryController} from "./category.controller";
 
