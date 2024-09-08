@@ -11,6 +11,8 @@ const middleware = [
   morgan("dev"),
   cors({
     origin: corsOrigin,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
   cookieParser(),
   // express.static("docs"),

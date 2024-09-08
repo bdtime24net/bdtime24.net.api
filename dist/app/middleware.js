@@ -37,6 +37,8 @@ const middleware = [
     (0, morgan_1.default)("dev"),
     (0, cors_1.default)({
         origin: config_1.corsOrigin,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     }),
     (0, express_2.default)(),
     express_1.default.json({ limit: "50mb" }),
