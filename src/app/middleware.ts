@@ -18,7 +18,7 @@ const middleware = [
   // express.static("docs"),
   express.json({ limit: "50mb" }),
   urlencoded({ extended: true }),
-  rateLimitMiddleware,
+  // rateLimitMiddleware,
   session({
     secret: 'keyboard cat',
     resave: false,

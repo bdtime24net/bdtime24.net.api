@@ -5,7 +5,26 @@ import {ITag} from './tag.validation'
 
 // Service function to create a new tag
 export const createTagService = async (tagData: ITag) => {
+
+    // check if the tag already exists
+    const existingTag = await prisma.tag.findFirst({
+        where: {
+            name: tagData.name
+        }
+    })
+    
+    if (existingTag) {
+        throw new Error("Tag already exists");
+    }
+    
     const tag = await prisma.tag.create({
+        
+        select: {
+            id: true,
+            name: true,
+            createdAt: true
+        },
+        
         data: {
             ...tagData
         }

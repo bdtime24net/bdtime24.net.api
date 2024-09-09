@@ -15,13 +15,23 @@ export const createTageController = async (
                 .status(400)
                 .json({ error: parsedBody.error.errors[0].message });
         }
-        const tagData = await createTagService(parsedBody.data);
-        return res.status(201).json({
-            success: true,
-            data: tagData,
-            message: "Tag created successfully",
-            error: null,
-        });
+
+    const tagName = parsedBody.data.name;
+    
+    
+    if (!tagName) {
+        return res
+            .status(400)
+            .json({ error: 'Tag name is required' });
+    }
+
+    const tagData = await createTagService(parsedBody.data);
+    return res.status(201).json({
+      success: true,
+      data: tagData,
+      message: 'Tag created successfully',
+      error: null,
+    });
     } catch (error) {
         next(error);
     }
