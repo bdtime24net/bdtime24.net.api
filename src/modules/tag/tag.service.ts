@@ -39,6 +39,20 @@ export const getTagsService = async () => {
     return tags
 }
 
+// Service function to search tags
+export const searchTagsService = async (name: string) => {
+    const tags = await prisma.tag.findMany({
+        where: {
+            name: {
+                contains: name,
+                mode: 'insensitive', // Optional: makes the search case-insensitive
+            }
+        }
+    });
+    return tags;
+};
+
+
 
 // Service function to update a tag
 export const updateTagService = async (id: string, tagData: ITag) => {

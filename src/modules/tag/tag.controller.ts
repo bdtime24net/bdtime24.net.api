@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {createTagService, deleteTagService, getTagsService, updateTagService} from './tag.service'
+import {createTagService, deleteTagService, getTagsService, searchTagsService, updateTagService} from './tag.service'
 import {tagValidationSchema} from './tag.validation'
 
 // Controller function to create a tag
@@ -56,6 +56,35 @@ export const getTagsController = async (
     }
 }
 
+
+// Controller function to search tags
+export const searchTagsController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { name } = req.query; // Assume the search term comes from query params
+        if (!name || typeof name !== 'string') {
+            return res.status(400).json({
+                success: false,
+                data: null,
+                message: "Name query parameter is required",
+                error: "Invalid request",
+            });
+        }
+
+        const tags = await searchTagsService(name);
+        return res.status(200).json({
+            success: true,
+            data: tags,
+            message: "Tags fetched successfully",
+            error: null,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 // Controller function to update a tag
 export const updateTagController = async (req: Request, res: Response, next: NextFunction) => {
