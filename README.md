@@ -243,7 +243,6 @@ The API provides consistent error messages and codes. Here are common scenarios 
   "message": "An unexpected error occurred. Please try again later."
 }
 ```
-```
 
 ---
 
