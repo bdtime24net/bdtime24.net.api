@@ -99,6 +99,15 @@ export type IGetArticlesOptions = z.infer<typeof GetArticlesOptionsSchema>;
 
 
 
-export const articleData = {
-  
-}
+export const updateArticleSchema = z.object({
+  headline: z.string().optional(),
+  description: z.string().optional(),
+  sourceName: z.string().optional(),
+  url: z.string().optional(),
+  urlToImage: z.array(z.string()).optional(),
+  categoryId: z.string().optional(),
+  userId: z.string().optional(),
+  tagId: z.string().optional(),
+  keywords: z.array(z.string()).optional(),
+
+})
