@@ -200,7 +200,7 @@ Retrieve detailed information about a specific news article by its ID.
 curl -H "Authorization: Bearer YOUR_API_KEY" \
      "https://api.bdtime24.net/news/12345"
 ```
-```
+
 
 ---
 
