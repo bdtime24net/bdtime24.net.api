@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.articleData = exports.GetArticlesOptionsSchema = exports.ArticleSchema = void 0;
+exports.updateArticleSchema = exports.GetArticlesOptionsSchema = exports.ArticleSchema = void 0;
 const zod_1 = require("zod");
 exports.ArticleSchema = zod_1.z.object({
     headline: zod_1.z
@@ -80,5 +80,15 @@ exports.GetArticlesOptionsSchema = zod_1.z.object({
     author: zod_1.z.string().optional(),
     date: DateRangeSchema.optional(),
 });
-exports.articleData = {};
+exports.updateArticleSchema = zod_1.z.object({
+    headline: zod_1.z.string().optional(),
+    description: zod_1.z.string().optional(),
+    sourceName: zod_1.z.string().optional(),
+    url: zod_1.z.string().optional(),
+    urlToImage: zod_1.z.array(zod_1.z.string()).optional(),
+    categoryId: zod_1.z.string().optional(),
+    userId: zod_1.z.string().optional(),
+    tagId: zod_1.z.string().optional(),
+    keywords: zod_1.z.array(zod_1.z.string()).optional(),
+});
 //# sourceMappingURL=article.validation.js.map

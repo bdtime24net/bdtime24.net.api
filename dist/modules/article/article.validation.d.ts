@@ -96,4 +96,34 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
     author?: string | undefined;
 }>;
 export type IGetArticlesOptions = z.infer<typeof GetArticlesOptionsSchema>;
-export declare const articleData: {};
+export declare const updateArticleSchema: z.ZodObject<{
+    headline: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    sourceName: z.ZodOptional<z.ZodString>;
+    url: z.ZodOptional<z.ZodString>;
+    urlToImage: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    categoryId: z.ZodOptional<z.ZodString>;
+    userId: z.ZodOptional<z.ZodString>;
+    tagId: z.ZodOptional<z.ZodString>;
+    keywords: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    url?: string | undefined;
+    description?: string | undefined;
+    headline?: string | undefined;
+    keywords?: string[] | undefined;
+    sourceName?: string | undefined;
+    urlToImage?: string[] | undefined;
+    categoryId?: string | undefined;
+    userId?: string | undefined;
+    tagId?: string | undefined;
+}, {
+    url?: string | undefined;
+    description?: string | undefined;
+    headline?: string | undefined;
+    keywords?: string[] | undefined;
+    sourceName?: string | undefined;
+    urlToImage?: string[] | undefined;
+    categoryId?: string | undefined;
+    userId?: string | undefined;
+    tagId?: string | undefined;
+}>;

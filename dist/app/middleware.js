@@ -31,7 +31,6 @@ const express_2 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const config_1 = require("../config");
-const rateLimitMiddleware_1 = __importDefault(require("../middlewares/rateLimitMiddleware"));
 const express_session_1 = __importDefault(require("express-session"));
 const middleware = [
     (0, morgan_1.default)("dev"),
@@ -43,7 +42,6 @@ const middleware = [
     (0, express_2.default)(),
     express_1.default.json({ limit: "50mb" }),
     (0, express_1.urlencoded)({ extended: true }),
-    rateLimitMiddleware_1.default,
     (0, express_session_1.default)({
         secret: 'keyboard cat',
         resave: false,

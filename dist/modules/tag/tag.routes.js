@@ -11,5 +11,6 @@ tagsRoutes.post("/tag/create", auth_middleware_1.default, tag_controller_1.creat
 tagsRoutes.get("/tag", tag_controller_1.getTagsController);
 tagsRoutes.delete("/tag/:id", auth_middleware_1.default, tag_controller_1.deleteTagController);
 tagsRoutes.put("/tag/:id", auth_middleware_1.default, tag_controller_1.updateTagController);
+tagsRoutes.get("/tag/search", auth_middleware_1.default, tag_controller_1.searchTagsController);
 exports.default = tagsRoutes;
 //# sourceMappingURL=tag.routes.js.map
