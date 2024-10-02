@@ -20,5 +20,5 @@ This project integrates the BDTime24 API to fetch and display news articles, cat
 ### Documentation
 
 - [API Documentation](https://bdtime24-net-api-6lh5.onrender.com/docs/)
-- [Changelog](https://bdtime24-net-api-6lh5.onrender.com/docs/changelog.md)
-- [License](https://bdtime24-net-api-6lh5.onrender.com/LICENSE.md)
+- [Changelog](https://github.com/bdtime24net/bdtime24.net.api/docs/changelog.md)
+- [License](https://github.com/bdtime24net/bdtime24.net.api/LICENSE.md)
