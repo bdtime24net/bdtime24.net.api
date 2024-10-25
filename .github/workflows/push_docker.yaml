@@ -6,11 +6,11 @@ on:
       - main
 
 env:
-  IMAGE_NAME: zobkazi/bdtime24-api
+  IMAGE_NAME: zobaidulkazihub/bdtime24-api
 
 jobs:
   push_to_registry:
-    name: Push Docker Hub My zobkazi/bdtime24-api
+    name: Push Docker Hub My zobaidulkazihub/bdtime24-api
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo from GitHub
@@ -24,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: zobkazi/bdtime24-api
+          images: zobaidulkazihub/bdtime24-api
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v5
         with:
