@@ -5,6 +5,7 @@ import YAML from "yamljs";
 import swaggerUI from "swagger-ui-express";
 import { errorHandler } from "./errors";
 import { notFoundHandler } from "../errors/notFoundError";
+import rateLimit from "express-rate-limit";
 
 const app: Application = express();
 const doc = YAML.load(`${process.cwd()}/src/docs/swagger.yaml`);
@@ -18,6 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
 app.use("/api", routes);
+
+app.use(rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 10, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+    headers: true, // Add RateLimit headers to the response
+}));
 
 
 app.use(notFoundHandler);
