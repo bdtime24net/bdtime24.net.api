@@ -27,6 +27,12 @@ tags:
   description: public Api Endpoints Article Purpose
 - name: Categories
   description: public Api Endpoints Category Purpose
+- name: Comments
+  description: Auth user created and update, delete this comment in this api..
+- name: Tags
+  description: News Tags Endpoints
+
+
 
 paths:
   /health:
@@ -290,6 +296,9 @@ paths:
         '400':
           $ref: '#/components/responses/400'
 
+
+#$# Dashboard: Start::::
+
   /dashboards:
     get:
       description: Authenticated User Can Get Dashboards Access Only
@@ -362,7 +371,151 @@ paths:
                           $ref: '#/components/schemas/Dashboard'
 
 
+
+## Articles ##
+
+  /articles:
+    get:
+      description: Articles Response Successfully,
+      tags: [Articles]
+      responses:
+        '200':
+          description: Articles Fetched Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Articles Fetched Successfully
+                  data:
+                    type: object
+                    properties:
+                      Articles:
+                        type: array
+                        items:
+                          
+
+
 ## Components
+
+## article/create##
+
+  /article/create:
+    post:
+      description: Created a new Article at this auth user..
+      tags: [Articles]
+      responses:
+        '200':
+            description: Articles Created Successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: integer
+                      format: int32
+                      example: 200
+                    message:
+                      type: string
+                      example: Successfully Created a new Article
+                    data:
+                      type: object
+                      properties:
+                        Articles:
+                          type: array
+                          items:
+
+
+# article/:id
+
+  /article/:id:
+    get::
+      description: Get a Article by id..
+      tags: [Articles]
+      responses:
+        '200':
+            description: Articles get Successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: integer
+                      format: int32
+                      example: 200
+                    message:
+                      type: string
+                      example: Successfully get all Article
+                    data:
+                      type: object
+                      properties:
+                        Articles:
+                          type: array
+                          items:
+
+
+
+  /article/update:
+    put:
+      description: Update Article at this auth user ID..
+      tags: [Articles]
+      responses:
+        '200':
+            description: Articles Update Successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: integer
+                      format: int32
+                      example: 200
+                    message:
+                      type: string
+                      example: Successfully Update a new Article
+                    data:
+                      type: object
+                      properties:
+                        Articles:
+                          type: array
+                          items:
+
+
+  /article/delete:
+    delete:
+      description: Delete  Article at this auth user ID....
+      tags: [Articles]
+      responses:
+        '200':
+            description: Articles Delete Successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: integer
+                      format: int32
+                      example: 200
+                    message:
+                      type: string
+                      example: Successfully Delete Article
+                    data:
+                      type: object
+                      properties:
+                        Articles:
+                          type: array
+                          items:
+  
 
 components:
   schemas:
