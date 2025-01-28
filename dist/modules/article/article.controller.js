@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticleController = exports.updateArticleController = exports.getArticleByIdController = exports.getArticlesController = exports.createArticleController = void 0;
+exports.deleteArticleController = exports.updateArticleController = exports.getLatestArticlesController = exports.getArticleBySlugController = exports.getArticlesController = exports.createArticleController = void 0;
 const article_service_1 = require("./article.service");
 const article_validation_1 = require("./article.validation");
 const createArticleController = async (req, res, next) => {
@@ -69,22 +69,41 @@ const getArticlesController = async (req, res, next) => {
     }
 };
 exports.getArticlesController = getArticlesController;
-const getArticleByIdController = async (req, res, next) => {
+const getArticleBySlugController = async (req, res) => {
+    const { slug } = req.params;
+    if (!slug) {
+        return res.status(400).json({ message: "Slug parameter is required" });
+    }
     try {
-        const { id } = req.params;
-        const article = await (0, article_service_1.getArticleByIdService)(id);
+        const article = await (0, article_service_1.getArticleBySlugService)(slug);
+        if (!article) {
+            return res.status(404).json({ message: "Article not found" });
+        }
+        return res.status(200).json(article);
+    }
+    catch (error) {
+        console.error("Error in getArticleBySlugController:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+exports.getArticleBySlugController = getArticleBySlugController;
+const getLatestArticlesController = async (req, res) => {
+    const { limit } = req.query;
+    const limitNumber = limit ? parseInt(limit) : 10;
+    try {
+        const articles = await (0, article_service_1.getLatestArticlesService)(limitNumber);
         return res.status(200).json({
             success: true,
-            data: article,
-            message: "Article retrieved successfully",
-            error: null,
+            data: articles,
+            message: "Latest articles fetched successfully",
         });
     }
     catch (error) {
-        next(error);
+        console.error("Error in getLatestArticlesController:", error);
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
-exports.getArticleByIdController = getArticleByIdController;
+exports.getLatestArticlesController = getLatestArticlesController;
 const updateArticleController = async (req, res, next) => {
     try {
         const { id } = req.params;

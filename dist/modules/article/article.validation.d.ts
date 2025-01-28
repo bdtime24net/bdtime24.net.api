@@ -1,7 +1,7 @@
 import { z } from "zod";
 export declare const ArticleSchema: z.ZodObject<{
     headline: z.ZodString;
-    slug: z.ZodOptional<z.ZodString>;
+    slug: z.ZodString;
     keywords: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     description: z.ZodString;
     sourceName: z.ZodString;
@@ -14,22 +14,22 @@ export declare const ArticleSchema: z.ZodObject<{
     url: string;
     description: string;
     headline: string;
+    slug: string;
     sourceName: string;
     categoryId: string;
     userId: string;
     tagId: string;
-    slug?: string | undefined;
     keywords?: string[] | undefined;
     urlToImage?: string[] | undefined;
 }, {
     url: string;
     description: string;
     headline: string;
+    slug: string;
     sourceName: string;
     categoryId: string;
     userId: string;
     tagId: string;
-    slug?: string | undefined;
     keywords?: string[] | undefined;
     urlToImage?: string[] | undefined;
 }>;

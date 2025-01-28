@@ -9,7 +9,12 @@ exports.ArticleSchema = zod_1.z.object({
         invalid_type_error: "Headline must be a string",
     })
         .min(1, "Headline cannot be empty"),
-    slug: zod_1.z.string().optional(),
+    slug: zod_1.z
+        .string({
+        required_error: "Slug is required",
+        invalid_type_error: "Slug must be a string",
+    })
+        .min(1, "Slug cannot be empty"),
     keywords: zod_1.z.array(zod_1.z.string()).optional(),
     description: zod_1.z
         .string({
@@ -29,8 +34,7 @@ exports.ArticleSchema = zod_1.z.object({
         invalid_type_error: "Url must be a string",
     })
         .min(1, "Url cannot be empty"),
-    urlToImage: zod_1.z
-        .array(zod_1.z.string()).optional(),
+    urlToImage: zod_1.z.array(zod_1.z.string()).optional(),
     categoryId: zod_1.z
         .string({
         required_error: "Category id is required",
@@ -48,7 +52,7 @@ exports.ArticleSchema = zod_1.z.object({
         required_error: "Tag id is required",
         invalid_type_error: "Tag id must be a string",
     })
-        .min(1, "Tag id cannot be empty")
+        .min(1, "Tag id cannot be empty"),
 });
 const SortSchema = zod_1.z.object({
     field: zod_1.z.string().default('createdAt'),

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticleBySlugService = exports.getArticlesService = exports.createArticleService = void 0;
+exports.deleteArticleService = exports.updateArticleService = exports.getLatestArticlesService = exports.getArticleBySlugService = exports.getArticlesService = exports.createArticleService = void 0;
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const createArticleService = async (aeticleData) => {
     const existingArticle = await prisma_1.default.article.findFirst({
@@ -91,18 +91,35 @@ const getArticlesService = async (articleData) => {
     };
 };
 exports.getArticlesService = getArticlesService;
-const getArticleBySlugService = async (slug) => { };
-exports.getArticleBySlugService = getArticleBySlugService;
-const getArticleByIdService = async (id) => {
-    const article = await prisma_1.default.article.findUnique({
-        where: { id },
-    });
-    if (!article) {
-        throw new Error("Article not found");
+const getArticleBySlugService = async (slug) => {
+    try {
+        const article = await prisma_1.default.article.findUnique({
+            where: { slug },
+        });
+        return article;
     }
-    return article;
+    catch (error) {
+        console.error("Error fetching article by slug:", error);
+        throw new Error("Unable to fetch article by slug");
+    }
 };
-exports.getArticleByIdService = getArticleByIdService;
+exports.getArticleBySlugService = getArticleBySlugService;
+const getLatestArticlesService = async (limit = 10) => {
+    try {
+        const articles = await prisma_1.default.article.findMany({
+            orderBy: {
+                publishedAt: 'desc',
+            },
+            take: limit,
+        });
+        return articles;
+    }
+    catch (error) {
+        console.error("Error fetching latest articles:", error);
+        throw new Error("Unable to fetch latest articles");
+    }
+};
+exports.getLatestArticlesService = getLatestArticlesService;
 const updateArticleService = async (id, articleData) => {
     const article = await prisma_1.default.article.update({
         where: { id },
