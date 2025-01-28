@@ -7,5 +7,6 @@ export declare const getAllNewsService: (page: number, limit: number, sortField:
     prevPage: string | null;
 }>;
 export declare const getNewsByIdService: (id: string) => Promise<INews | null>;
+export declare const getNewsByTitleService: (title: string) => Promise<INews | null>;
 export declare const updateNewsService: (id: string, newsData: Partial<INews>) => Promise<INews | null>;
 export declare const deleteNewsService: (id: string) => Promise<INews | null>;

@@ -1,6 +1,7 @@
 import { z } from "zod";
 export declare const ArticleSchema: z.ZodObject<{
     headline: z.ZodString;
+    slug: z.ZodOptional<z.ZodString>;
     keywords: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     description: z.ZodString;
     sourceName: z.ZodString;
@@ -17,6 +18,7 @@ export declare const ArticleSchema: z.ZodObject<{
     categoryId: string;
     userId: string;
     tagId: string;
+    slug?: string | undefined;
     keywords?: string[] | undefined;
     urlToImage?: string[] | undefined;
 }, {
@@ -27,6 +29,7 @@ export declare const ArticleSchema: z.ZodObject<{
     categoryId: string;
     userId: string;
     tagId: string;
+    slug?: string | undefined;
     keywords?: string[] | undefined;
     urlToImage?: string[] | undefined;
 }>;
@@ -63,15 +66,15 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     limit?: number | undefined;
     category?: string | undefined;
-    date?: {
-        from?: Date | undefined;
-        to?: Date | undefined;
-    } | undefined;
     sort?: {
         field: string;
         order: "asc" | "desc";
     } | undefined;
     filter?: Record<string, any> | undefined;
+    date?: {
+        from?: Date | undefined;
+        to?: Date | undefined;
+    } | undefined;
     search?: string | undefined;
     fields?: string[] | undefined;
     page?: number | undefined;
@@ -80,15 +83,15 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
 }, {
     limit?: number | undefined;
     category?: string | undefined;
-    date?: {
-        from?: Date | undefined;
-        to?: Date | undefined;
-    } | undefined;
     sort?: {
         field?: string | undefined;
         order?: "asc" | "desc" | undefined;
     } | undefined;
     filter?: Record<string, any> | undefined;
+    date?: {
+        from?: Date | undefined;
+        to?: Date | undefined;
+    } | undefined;
     search?: string | undefined;
     fields?: string[] | undefined;
     page?: number | undefined;

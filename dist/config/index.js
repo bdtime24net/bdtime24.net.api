@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mailService = exports.mailPass = exports.mailUser = exports.mailPort = exports.mailHost = exports.refresh_token_expiry = exports.access_token_expiry = exports.saltRound = exports.defaultPass = exports.refresh_token = exports.access_token = exports.corsOrigin = exports.redisUrl = exports.mongoUrl = exports.port = exports.frontendUrl = exports.baseUrl = exports.NODE_ENV = void 0;
 require("dotenv/config");
-exports.NODE_ENV = process.env.NODE_ENV;
+exports.NODE_ENV = process.env.NODE_ENV || "development";
 exports.baseUrl = process.env.BASE_URL;
 exports.frontendUrl = process.env.FRONTEND_URL;
 exports.port = process.env.PORT;

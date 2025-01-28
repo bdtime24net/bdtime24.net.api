@@ -28,7 +28,7 @@ const signinController = async (req, res, next) => {
         if (!parsedBody.success) {
             return res.status(400).json({ error: parsedBody.error.errors });
         }
-        const { user, token } = await (0, auth_service_1.signinService)(parsedBody.data, req);
+        const { token } = await (0, auth_service_1.signinService)(parsedBody.data, req);
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

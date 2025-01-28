@@ -118,8 +118,9 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
   };
 };
 
-
 // Service function to get a single article by slug
+
+export const getArticleBySlugService = async (slug: string) => {}
 
 // Service function to get a single article
 export const getArticleByIdService = async (id: string) => {

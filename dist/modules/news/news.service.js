@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteNewsService = exports.updateNewsService = exports.getNewsByIdService = exports.getAllNewsService = exports.createNewsService = void 0;
+exports.deleteNewsService = exports.updateNewsService = exports.getNewsByTitleService = exports.getNewsByIdService = exports.getAllNewsService = exports.createNewsService = void 0;
 const news_model_1 = require("./news.model");
 const news_validation_1 = require("./news.validation");
 const CustomError_1 = require("../../errors/CustomError");
@@ -42,10 +42,10 @@ const getAllNewsService = async (page, limit, sortField, sortOrder, filter, sear
         .limit(limit);
     const total = await news_model_1.Article.countDocuments(filterObject);
     const nextPage = skip + limit < total
-        ? `/api/v1/news?page=${page + 1}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
+        ? `/api/news?page=${page + 1}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
         : null;
     const prevPage = page > 1
-        ? `/api/v1/news?page=${page - 1}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
+        ? `/api/news?page=${page - 1}&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
         : null;
     return {
         total,
@@ -63,6 +63,14 @@ const getNewsByIdService = async (id) => {
     return article;
 };
 exports.getNewsByIdService = getNewsByIdService;
+const getNewsByTitleService = async (title) => {
+    const article = await news_model_1.Article.findOne({ title });
+    if (!article) {
+        throw new CustomError_1.CustomError(404, "Article not found");
+    }
+    return article;
+};
+exports.getNewsByTitleService = getNewsByTitleService;
 const updateNewsService = async (id, newsData) => {
     const parsedBody = news_validation_1.newsValidationSchema
         .partial()

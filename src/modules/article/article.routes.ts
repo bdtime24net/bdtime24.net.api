@@ -10,6 +10,7 @@ articleRoutes.post("/article/create", veryfyToken, createArticleController);
 
 articleRoutes.get("/article", getArticlesController);
 
+
 articleRoutes.get("/article/:id", getArticleByIdController);
 
 articleRoutes.put("/article/:id", veryfyToken, updateArticleController);

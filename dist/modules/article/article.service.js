@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticlesService = exports.createArticleService = void 0;
+exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticleBySlugService = exports.getArticlesService = exports.createArticleService = void 0;
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const createArticleService = async (aeticleData) => {
     const existingArticle = await prisma_1.default.article.findFirst({
@@ -91,6 +91,8 @@ const getArticlesService = async (articleData) => {
     };
 };
 exports.getArticlesService = getArticlesService;
+const getArticleBySlugService = async (slug) => { };
+exports.getArticleBySlugService = getArticleBySlugService;
 const getArticleByIdService = async (id) => {
     const article = await prisma_1.default.article.findUnique({
         where: { id },

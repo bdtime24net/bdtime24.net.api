@@ -6,6 +6,7 @@ export declare const getArticlesService: (articleData: IGetArticlesOptions) => P
     articles: {
         id: string;
         headline: string;
+        slug: string;
         keywords: string[];
         sourceName: string | null;
         url: string;
@@ -22,9 +23,11 @@ export declare const getArticlesService: (articleData: IGetArticlesOptions) => P
     nextLink: string | null;
     prevLink: string | null;
 }>;
+export declare const getArticleBySlugService: (slug: string) => Promise<void>;
 export declare const getArticleByIdService: (id: string) => Promise<{
     id: string;
     headline: string;
+    slug: string;
     keywords: string[];
     sourceName: string | null;
     url: string;
@@ -39,6 +42,7 @@ export declare const getArticleByIdService: (id: string) => Promise<{
 export declare const updateArticleService: (id: string, articleData: IArticle) => Promise<{
     id: string;
     headline: string;
+    slug: string;
     keywords: string[];
     sourceName: string | null;
     url: string;
@@ -53,6 +57,7 @@ export declare const updateArticleService: (id: string, articleData: IArticle) =
 export declare const deleteArticleService: (id: string) => Promise<{
     id: string;
     headline: string;
+    slug: string;
     keywords: string[];
     sourceName: string | null;
     url: string;

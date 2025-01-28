@@ -1,5 +1,5 @@
 import "dotenv/config";
-export declare const NODE_ENV: string | undefined;
+export declare const NODE_ENV: string;
 export declare const baseUrl: string | undefined;
 export declare const frontendUrl: string | undefined;
 export declare const port: string | undefined;
