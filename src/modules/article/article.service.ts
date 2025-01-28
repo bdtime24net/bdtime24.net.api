@@ -118,19 +118,50 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
   };
 };
 
-// Service function to get a single article by slug
+// Service function to get slugs articles
+export const getArticleBySlugService = async (slug: string): Promise<IArticle | null> => {
+  try {
+    const article = await prisma.article.findUnique({
+      where: { slug },
+    });
 
-export const getArticleBySlugService = async (slug: string) => {}
-
-// Service function to get a single article
-export const getArticleByIdService = async (id: string) => {
-  const article = await prisma.article.findUnique({
-    where: { id },
-  });
-  if (!article) {
-    throw new Error("Article not found");
+    return article;
+    
+  } catch (error) {
+    console.error("Error fetching article by slug:", error);
+    throw new Error("Unable to fetch article by slug");
   }
-  return article;
+};
+
+
+// // Service function to get a single article
+// export const getArticleByIdService = async (id: string) => {
+//   const article = await prisma.article.findUnique({
+//     where: { id },
+//   });
+//   if (!article) {
+//     throw new Error("Article not found");
+//   }
+//   return article;
+// };
+
+
+// Service function to get latest articles
+export const getLatestArticlesService = async (limit: number = 10): Promise<IArticle[]> => {
+  try {
+    const articles = await prisma.article.findMany({
+      orderBy: {
+        publishedAt: 'desc', // Order by createdAt in descending order
+      },
+      take: limit, // Limit the number of articles
+    });
+
+      return articles;
+
+  } catch (error) {
+    console.error("Error fetching latest articles:", error);
+    throw new Error("Unable to fetch latest articles");
+  }
 };
 
 

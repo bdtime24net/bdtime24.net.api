@@ -7,49 +7,51 @@ export const ArticleSchema = z.object({
       invalid_type_error: "Headline must be a string",
     })
     .min(1, "Headline cannot be empty"),
-    slug: z.string().optional(),
-    keywords: z.array(z.string()).optional(),
-    description: z
+  slug: z
+    .string({
+      required_error: "Slug is required",
+      invalid_type_error: "Slug must be a string",
+    })
+    .min(1, "Slug cannot be empty"), // Ensure slug is required
+  keywords: z.array(z.string()).optional(),
+  description: z
     .string({
       required_error: "Description is required",
       invalid_type_error: "Description must be a string",
     })
     .min(1, "Description cannot be empty"),
-    sourceName: z
+  sourceName: z
     .string({
       required_error: "Source name is required",
       invalid_type_error: "Source name must be a string",
     })
-    .min(1, "Source name cannot be empty"),
-    url: z
+    .min(1, "Source name cannot be empty"), // Ensure sourceName is required
+  url: z
     .string({
       required_error: "Url is required",
       invalid_type_error: "Url must be a string",
     })
     .min(1, "Url cannot be empty"),
-
-    urlToImage: z
-    .array(z.string()).optional(),
-    categoryId: z
+  urlToImage: z.array(z.string()).optional(),
+  categoryId: z
     .string({
       required_error: "Category id is required",
       invalid_type_error: "Category id must be a string",
     })
     .min(1, "Category id cannot be empty"),
-    userId: z
+  userId: z
     .string({
       required_error: "User id is required",
       invalid_type_error: "User id must be a string",
     })
     .min(1, "User id cannot be empty"),
-    tagId: z
+  tagId: z
     .string({
       required_error: "Tag id is required",
       invalid_type_error: "Tag id must be a string",
     })
-    .min(1, "Tag id cannot be empty")
-  
-})
+    .min(1, "Tag id cannot be empty"),
+});
 
 export type IArticle = z.infer<typeof ArticleSchema>;
 

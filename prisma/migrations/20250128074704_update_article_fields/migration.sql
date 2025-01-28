@@ -30,13 +30,14 @@ CREATE TABLE "NewsCategory" (
 CREATE TABLE "Article" (
     "id" TEXT NOT NULL,
     "headline" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "keywords" TEXT[],
-    "sourceName" TEXT,
+    "sourceName" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "urlToImage" TEXT[],
     "description" TEXT NOT NULL,
     "categoryId" TEXT NOT NULL,
-    "userId" TEXT,
+    "userId" TEXT NOT NULL,
     "tagId" TEXT NOT NULL,
     "publishedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -72,13 +73,16 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "NewsCategory_name_key" ON "NewsCategory"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Article_slug_key" ON "Article"("slug");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
 
 -- AddForeignKey
 ALTER TABLE "Article" ADD CONSTRAINT "Article_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "NewsCategory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Article" ADD CONSTRAINT "Article_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Article" ADD CONSTRAINT "Article_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Article" ADD CONSTRAINT "Article_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tag"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createArticleService, deleteArticleService, getArticleByIdService, getArticlesService, updateArticleService } from "./article.service";
+import { createArticleService, deleteArticleService, getArticleBySlugService, getArticlesService, getLatestArticlesService, updateArticleService } from "./article.service";
 import { ArticleSchema, GetArticlesOptionsSchema } from "./article.validation";
 
 // Controller function to create a new article
@@ -91,27 +91,66 @@ export const getArticlesController = async (
 };
 
 
+// Controller function to get slugs articles
+export const getArticleBySlugController = async (req: Request, res: Response) => {
+  const { slug } = req.params;
 
-// Controller function to get a single article
-export const getArticleByIdController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<Response | void> => {
+  if (!slug) {
+    return res.status(400).json({ message: "Slug parameter is required" });
+  }
+
   try {
-    const { id } = req.params;
-    const article = await getArticleByIdService(id);
-    return res.status(200).json({
-      success: true,
-      data: article,
-      message: "Article retrieved successfully",
-      error: null,
-    });
+    const article = await getArticleBySlugService(slug);
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    return res.status(200).json(article);
   } catch (error) {
-    next(error);
+    console.error("Error in getArticleBySlugController:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+// // Controller function to get a single article
+// export const getArticleByIdController = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<Response | void> => {
+//   try {
+//     const { id } = req.params;
+//     const article = await getArticleByIdService(id);
+//     return res.status(200).json({
+//       success: true,
+//       data: article,
+//       message: "Article retrieved successfully",
+//       error: null,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
+
+export const getLatestArticlesController = async (req: Request, res: Response) => {
+  const { limit } = req.query; // You can pass the limit as a query parameter
+
+  const limitNumber = limit ? parseInt(limit as string) : 10; // Default to 10 if no limit is provided
+
+  try {
+    const articles = await getLatestArticlesService(limitNumber);
+    
+    return res.status(200).json({
+      success: true,
+      data: articles,
+      message: "Latest articles fetched successfully",
+    });
+  } catch (error) {
+    console.error("Error in getLatestArticlesController:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 // Controller function to update a article
