@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,13 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-// schema.prisma
-
-enum Role {
-  USER
-  ADMIN
 }
 
 model User {
@@ -28,58 +15,61 @@ model User {
   ipAddress            String
   userAgent            String
   role                 Role      @default(USER)
-  articles             Article[]
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
-  resetPasswordToken   String? // Optional field
-  resetPasswordExpires DateTime? // Optional field
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  articles             Article[]
+  Comment              Comment[]
 
   @@map("User")
-  Comment Comment[]
 }
 
 model NewsCategory {
-  id           String    @id @default(cuid())
-  name         String    @unique
-  articles     Article[]
+  id       String    @id @default(cuid())
+  name     String    @unique
+  articles Article[]
 }
 
 model Article {
   id          String       @id @default(cuid())
   headline    String
-  slug        String       @unique   // Make slug required
+  slug        String       @unique
   keywords    String[]
-  sourceName  String       // Make sourceName required
+  sourceName  String
   url         String
   urlToImage  String[]
   description String
   categoryId  String
-  category    NewsCategory @relation(fields: [categoryId], references: [id])
-  User        User         @relation(fields: [userId], references: [id])
   userId      String
-  Tag         Tag          @relation(fields: [tagId], references: [id])
   tagId       String
   publishedAt DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-
+  category    NewsCategory @relation(fields: [categoryId], references: [id])
+  Tag         Tag          @relation(fields: [tagId], references: [id])
+  User        User         @relation(fields: [userId], references: [id])
   Comment     Comment[]
 }
 
 model Tag {
-  id   String @id @default(cuid())
-  name String @unique
-  createdAt DateTime @default(now())
-
-  Article Article[]
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  Article   Article[]
 }
 
 model Comment {
-  id          String    @id @default(cuid())
-  body        String
-  articleId   String
-  Article     Article   @relation(fields: [articleId], references: [id])
-  userId      String
-  User        User?     @relation(fields: [userId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  body      String
+  articleId String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Article   Article  @relation(fields: [articleId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }

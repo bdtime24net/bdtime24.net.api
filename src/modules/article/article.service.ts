@@ -28,18 +28,19 @@ export const createArticleService = async (aeticleData: IArticle) => {
 
 
 // Service function to get all articles
-export const getArticlesService = async (articleData: IGetArticlesOptions) => {
+export const getArticlesService = async (articleData: IGetArticlesOptions & { syncMode?: boolean }) => {
   const {
     page = 1,
     limit = 10,
     fields = [],
-    sort = { field: 'updatedAt', order: 'desc' }, // Default to 'updatedAt'
+    sort = { field: 'updatedAt', order: 'desc' },
     query = '',
     search = '',
     filter = {},
     category = '',
     author = '',
-    date = {}
+    date = {},
+    syncMode = false, // ডিফল্ট অ্যাসিনক্রোনাস
   } = articleData;
 
   const skip = (page - 1) * limit;
@@ -73,34 +74,62 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     };
   }
 
-  // Get the total count of articles matching the filters
-  const totalCount = await prisma.article.count({ where });
+  // Get the total count of articles
+  let totalCount = 0;
+  if (!syncMode) {
+    // অ্যাসিনক্রোনাস (ডিফল্ট)
+    totalCount = await prisma.article.count({ where });
+  } else {
+    // সিনক্রোনাস (অপশনাল)
+    prisma.article.count({ where }).then((count) => {
+      totalCount = count;
+    });
+  }
 
   // Determine valid sort field
-  const validSortFields = ['id', 'title', 'description', 'category', 'author', 'publishedAt', 'updatedAt']; // Update based on your Prisma schema
+  const validSortFields = ['id', 'title', 'description', 'category', 'author', 'publishedAt', 'updatedAt'];
   const sortField = validSortFields.includes(sort.field) ? sort.field : 'updatedAt';
 
   // Fetch the paginated articles
-  const articles = await prisma.article.findMany({
-    where,
-    skip,
-    take: limit,
-    select: fields.length > 0 ? fields.reduce((acc, field) => {
-     
-      return acc;
-    }, {
-      id: true,
-      title: true,
-      description: true,
-      category: true,
-      author: true,
-      publishedAt: true,
-      updatedAt: true
-    }) : undefined,
-    orderBy: {
-      [sortField]: sort.order,
-    },
-  });
+  const articles = syncMode
+    ? prisma.article.findMany({
+        where,
+        skip,
+        take: limit,
+        select: fields.length > 0 ? fields.reduce((acc, field) => {
+          return acc;
+        }, {
+          id: true,
+          title: true,
+          description: true,
+          category: true,
+          author: true,
+          publishedAt: true,
+          updatedAt: true
+        }) : undefined,
+        orderBy: {
+          [sortField]: sort.order,
+        },
+      })
+    : await prisma.article.findMany({
+        where,
+        skip,
+        take: limit,
+        select: fields.length > 0 ? fields.reduce((acc, field) => {
+          return acc;
+        }, {
+          id: true,
+          title: true,
+          description: true,
+          category: true,
+          author: true,
+          publishedAt: true,
+          updatedAt: true
+        }) : undefined,
+        orderBy: {
+          [sortField]: sort.order,
+        },
+      });
 
   // Generate pagination metadata
   const totalPages = Math.ceil(totalCount / limit);
@@ -118,6 +147,7 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
   };
 };
 
+
 // Service function to get slugs articles
 export const getArticleBySlugService = async (slug: string): Promise<IArticle | null> => {
   try {
@@ -134,35 +164,7 @@ export const getArticleBySlugService = async (slug: string): Promise<IArticle | 
 };
 
 
-// // Service function to get a single article
-// export const getArticleByIdService = async (id: string) => {
-//   const article = await prisma.article.findUnique({
-//     where: { id },
-//   });
-//   if (!article) {
-//     throw new Error("Article not found");
-//   }
-//   return article;
-// };
 
-
-// Service function to get latest articles
-export const getLatestArticlesService = async (limit: number = 2): Promise<IArticle[]> => {
-  try {
-    const articles = await prisma.article.findMany({
-      orderBy: {
-        publishedAt: 'desc', // Order by createdAt in descending order
-      },
-      take: limit, // Limit the number of articles
-    });
-
-      return articles;
-
-  } catch (error) {
-    console.error("Error fetching latest articles:", error);
-    throw new Error("Unable to fetch latest articles");
-  }
-};
 
 
 // Service function to update a article

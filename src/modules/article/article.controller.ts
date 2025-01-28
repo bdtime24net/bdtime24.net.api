@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createArticleService, deleteArticleService, getArticleBySlugService, getArticlesService, getLatestArticlesService, updateArticleService } from "./article.service";
+import { createArticleService, deleteArticleService, getArticleBySlugService, getArticlesService, updateArticleService } from "./article.service";
 import { ArticleSchema, GetArticlesOptionsSchema } from "./article.validation";
 
 // Controller function to create a new article
@@ -36,18 +36,13 @@ export const getArticlesController = async (
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-     // Extract and parse query parameters
-     const queryParams = {
-      page: parseInt(req.query.page as string, 10) || undefined,
-      limit: parseInt(req.query.limit as string, 10) || undefined,
-      fields: req.query.fields ? (Array.isArray(req.query.fields) ? req.query.fields : [req.query.fields]) : undefined,
-      sort: req.query.sort ? JSON.parse(req.query.sort as string) : undefined, // Ensure it's an object
-      query: req.query.query as string,
-      search: req.query.search as string,
-      filter: req.query.filter ? JSON.parse(req.query.filter as string) : undefined, // Ensure it's an object
-      category: req.query.category as string,
-      author: req.query.author as string,
-      date: req.query.date ? JSON.parse(req.query.date as string) : undefined // Ensure it's an object
+    // Extract and parse query parameters
+    const queryParams = {
+      ...req.query,
+      page: req.query.page ? parseInt(req.query.page as string) : 1, // পৃষ্ঠা প্যারামিটার
+      limit: req.query.limit ? parseInt(req.query.limit as string) : 10, // সীমা প্যারামিটার
+      fields: req.query.fields ? (req.query.fields as string).split(",") : [], // ক্ষেত্র প্যারামিটার
+      syncMode: req.query.syncMode === 'true', // সিনক্রোনাস মোড প্যারামিটার
     };
 
     // Validate and parse query parameters using Zod schema
@@ -57,22 +52,11 @@ export const getArticlesController = async (
       return res.status(400).json({ error: parsedQuery.error.errors });
     }
 
-    // Apply default values if parameters are not provided
-    const options = {
-      page: parsedQuery.data.page ?? 1,
-      limit: parsedQuery.data.limit ?? 10,
-      fields: parsedQuery.data.fields,
-      sort: parsedQuery.data.sort,
-      query: parsedQuery.data.query,
-      search: parsedQuery.data.search,
-      filter: parsedQuery.data.filter,
-      category: parsedQuery.data.category,
-      author: parsedQuery.data.author,
-      date: parsedQuery.data.date
-    };
-
     // Pass validated parameters to the service
-    const result = await getArticlesService(options);
+    const result = await getArticlesService({
+      ...parsedQuery.data,
+      syncMode: queryParams.syncMode, // পদ্ধতি পাস করুন
+    });
 
     return res.status(200).json({
       success: true,
@@ -83,7 +67,6 @@ export const getArticlesController = async (
       message: "Articles retrieved successfully",
       error: null,
       data: result.articles,
-     
     });
   } catch (error) {
     next(error);
@@ -114,41 +97,8 @@ export const getArticleBySlugController = async (req: Request, res: Response) =>
 };
 
 
-// // Controller function to get a single article
-// export const getArticleByIdController = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<Response | void> => {
-//   try {
-//     const { id } = req.params;
-//     const article = await getArticleByIdService(id);
-//     return res.status(200).json({
-//       success: true,
-//       data: article,
-//       message: "Article retrieved successfully",
-//       error: null,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 
-export const getLatestArticlesController = async (req: Request, res: Response) => {
-  try {
-    const articles = await getLatestArticlesService();
-
-    if (!articles || articles.length === 0) {
-      return res.status(404).json({ message: "Article not found" });
-    }
-
-    res.status(200).json({ data: articles });
-  } catch (error) {
-    console.error("Error in getLatestArticlesController:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 
 // Controller function to update a article
 export const updateArticleController = async (
