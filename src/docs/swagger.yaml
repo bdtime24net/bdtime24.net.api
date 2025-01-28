@@ -374,13 +374,124 @@ paths:
 
 ## Articles ##
 
-  /articles:
+  /article:
     get:
-      description: Articles Response Successfully,
-      tags: [Articles]
+      description: Get All Articles
+      tags:
+        - Articles
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+            example: 1
+          description: Page number for pagination
+        - in: query
+          name: limit
+          required: true
+          schema:
+            type: integer
+            example: 10
+          description: Number of articles per page
+        - in: query
+          name: syncMode
+          required: true
+          schema:
+            type: boolean
+            example: true
+          description: Whether to sync the articles in real-time
       responses:
         '200':
-          description: Articles Fetched Successfully
+          description: Articles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  totalCount:
+                    type: integer
+                    example: 1
+                  totalPages:
+                    type: integer
+                    example: 1
+                  nextLink:
+                    type: string
+                    nullable: true
+                    example: null
+                  prevLink:
+                    type: string
+                    nullable: true
+                    example: null
+                  message:
+                    type: string
+                    example: "Articles retrieved successfully"
+                  error:
+                    type: string
+                    nullable: true
+                    example: null
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+
+  /article/create:
+    post:
+      description: Created a new Article at this auth user..
+      tags: [Articles]
+      responses:
+        '201':
+            description: Articles Created Successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    statusCode:
+                      type: integer
+                      format: int32
+                      example: 201
+                    message:
+                      type: string
+                      example: Successfully Created a new Article
+                    data:
+                      type: object
+                      properties:
+                        Articles:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/Article'
+        '404':
+          description: Not Found'
+        '500':
+          description: Internal Server Error
+
+
+# article/:
+
+  /article/{slug}:
+    get:
+      description: Get an Article by Slug
+      tags:
+        - Articles
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+          description: The slug of the article
+      responses:
+        '200':
+          description: Article retrieved successfully
           content:
             application/json:
               schema:
@@ -392,74 +503,18 @@ paths:
                     example: 200
                   message:
                     type: string
-                    example: Articles Fetched Successfully
+                    example: "Successfully get the Article"
                   data:
                     type: object
                     properties:
-                      Articles:
-                        type: array
-                        items:
-                          
-
-
-## Components
-
-## article/create##
-
-  /article/create:
-    post:
-      description: Created a new Article at this auth user..
-      tags: [Articles]
-      responses:
-        '200':
-            description: Articles Created Successfully
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    statusCode:
-                      type: integer
-                      format: int32
-                      example: 200
-                    message:
-                      type: string
-                      example: Successfully Created a new Article
-                    data:
-                      type: object
-                      properties:
-                        Articles:
-                          type: array
-                          items:
-
-
-# article/:id
-
-  /article/:id:
-    get::
-      description: Get a Article by id..
-      tags: [Articles]
-      responses:
-        '200':
-            description: Articles get Successfully
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    statusCode:
-                      type: integer
-                      format: int32
-                      example: 200
-                    message:
-                      type: string
-                      example: Successfully get all Article
-                    data:
-                      type: object
-                      properties:
-                        Articles:
-                          type: array
-                          items:
+                      article:
+                        $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+        '404':
+          description: Article not found
+        '500':
+          description: Internal Server Error
 
 
 
@@ -488,6 +543,7 @@ paths:
                         Articles:
                           type: array
                           items:
+                            $ref: '#/components/schemas/Article'
 
 
   /article/delete:
@@ -509,13 +565,300 @@ paths:
                     message:
                       type: string
                       example: Successfully Delete Article
-                    data:
-                      type: object
-                      properties:
-                        Articles:
-                          type: array
-                          items:
   
+
+  /article/{slug}/comment:
+    post:
+      description: Create a new Comment on an Article
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+          description: The slug of the article
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: "আমি এই খবরটি পড়ে খুব আনন্দিত হয়েছি"
+              required:
+              - comment
+      responses:
+        '201':
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Comment created successfully
+                  data:
+                    type: object
+                    properties:
+                      comment:
+                        $ref: '#/components/schemas/Comment'
+        '400':
+          description: Bad Request
+        '404':
+          description: Article not found
+        '500':
+          description: Internal Server Error
+        
+  /article/{slug}/comment/{id}:
+    put:
+      description: Update a Comment on an Article
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: slug
+          required: true
+          schema:
+            type: string
+          description: The slug of the article
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The id of the comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  example: "আমি এই খবরটি পড়ে খুব আনন্দিত হয়েছি"
+              required:
+              - comment
+      responses:
+        '200':
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Comment updated successfully
+                  data:
+                    type: object
+                    properties:
+                      comment:
+                        $ref: '#/components/schemas/Comment'
+        '400':
+          description: Bad Request
+        '404':
+          description: Comment not found
+        '500':
+          description: Internal Server Error
+
+  /Categories:
+    get:
+      description: Get All Categories
+      tags:
+        - Categories
+      responses:
+        '200':
+          description: Categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: "Categories retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /Categories/create:
+    post:
+      description: Create a new Category
+      tags:
+        - Categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "আন্তর্জাতিক"
+                description:
+                  type: string
+                  example: "আন্তর্জাতিক বিষয়ক খবর"
+              required:
+              - name
+              - description
+      responses:
+        '201':
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Category created successfully
+                  data:
+                    type: object
+                    properties:
+                      category:
+                        $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /categories/{id}: # get category by id
+    get:
+      description: Get a Category by ID
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The id of the category
+      responses:
+        '200':
+          description: Category retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: "Category retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      category:
+                        $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+        '404':
+          description: Category not found
+        '500':
+          description: Internal Server Error
+
+  /tag:
+    get:
+      description: Get All Tags
+      tags:
+        - Tags
+      responses:
+        '200':
+          description: Tags retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: "Tags retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+
+  /tag/create:
+    post:
+      description: Create a new Tag
+      tags:
+        - Tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "আন্তর্জাতিক"
+                description:
+                  type: string
+                  example: "আন্তর্জাতিক বিষয়ক খবর"
+              required:
+              - name
+              - description
+      responses:
+        '201':
+          description: Tag created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Tag created successfully
+                  data:
+                    type: object
+                    properties:
+                      tag:
+                        $ref: '#/components/schemas/Tag'
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error  
 
 components:
   schemas:
@@ -560,6 +903,132 @@ components:
           type: string
           example: https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50
 
+    Article:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cm6g6si5w000iecujc1fa5vqb"
+        headline:
+          type: string
+          example: "যাত্রীদের জিম্মি করে কর্মসূচি দুঃখজনক : রেলপথ উপদেষ্টা"
+        slug:
+          type: string
+          example: "যাত্রীদের জিম্মি করে কর্মসূচি দুঃখজনক : রেলপথ উপদেষ্টা"
+        keywords:
+          type: array
+          items:
+            type: string
+          example:
+            - "রেলপথ মন্ত্রণালয়"
+            - "কমলাপুর রেলওয়ে স্টেশন"
+        sourceName:
+          type: string
+          example: "আন্তর্জাতিক"
+        url:
+          type: string
+          example: "https://cdn.dhakapost.com/media/imgAll/BG/2025January/fawzul-katrim-20250128113953.jpg"
+        urlToImage:
+          type: array
+          items:
+            type: string
+          example:
+            - "https://cdn.dhakapost.com/media/imgAll/BG/2024October/israel-20241025154728.jpg"
+            - "https://cdn.dhakapost.com/media/imgAll/BG/2024October/gaza-2-20241025075508.jpg"
+            - "https://cdn.dhakapost.com/media/imgAll/BG/2024October/putin-brics-20241024154212.jpg"
+        description:
+          type: string
+          example: "যাত্রীদের জিম্মি করে বাংলাদেশ রেলওয়ের রানিং স্টাফদের কর্মসূচি দুঃখজনক..."
+        categoryId:
+          type: string
+          example: "cm6g6rxbj000fecujtca22jvk"
+        userId:
+          type: string
+          example: "cm6g6qp6t000eecujuu3avt9s"
+        tagId:
+          type: string
+          example: "cm6g6sbgj000gecuj2s1qt0ne"
+        publishedAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cm6g6rxbj000fecujtca22jvk"
+        name:
+          type: string
+          example: "আন্তর্জাতিক"
+        description:
+          type: string
+          example: "আন্তর্জাতিক বিষয়ক খবর"
+        userId:
+          type: string
+          example: "cm6g6qp6t000eecujuu3avt9s"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cm6g6rxbj000fecujtca22jvk"
+        articleId:
+          type: string
+          example: "cm6g6rxbj000fecujtca22jvk"
+        userId:
+          type: string
+          example: "cm6g6qp6t000eecujuu3avt9s"
+        comment:
+          type: string
+          example: "আমি এই খবরটি পড়ে খুব আনন্দিত হয়েছি"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cm6g6rxbj000fecujtca22jvk"
+        name:
+          type: string
+          example: "আন্তর্জাতিক"
+        description:
+          type: string
+          example: "আন্তর্জাতিক বিষয়ক খবর"
+        userId:
+          type: string
+          example: "cm6g6qp6t000eecujuu3avt9s"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-28T07:59:30.548Z"
+  
   securitySchemes:
     bearerAuth:
       type: http
