@@ -47,6 +47,7 @@ model NewsCategory {
 model Article {
   id          String       @id @default(cuid())
   headline    String 
+  slug        String
   keywords    String[]
   sourceName  String?
   url         String

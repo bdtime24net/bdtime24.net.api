@@ -6,6 +6,7 @@ import {
   getNewsByIdService,
   updateNewsService,
   deleteNewsService,
+  getNewsByTitleService,
 } from "./news.service";
 import { INews } from "./news.interface";
 
@@ -74,6 +75,32 @@ export const getNewsByIdController = async (
   try {
     const article = await getNewsByIdService(req.params.id);
     res.status(200).json(article);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Controller function to get a single news article by Title
+export const getNewsByTitleController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const title =  req.query.title as string;
+
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        message: "Title is required as query parameter",
+      });
+    }
+
+    const decodedTitle = decodeURIComponent(title);
+    const article = await getNewsByTitleService(decodedTitle);
+    res.status(200).json(article);
+
   } catch (error) {
     next(error);
   }

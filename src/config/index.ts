@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-export const NODE_ENV = process.env.NODE_ENV;
+export const NODE_ENV = process.env.NODE_ENV || "development";
 export const baseUrl = process.env.BASE_URL;
 export const frontendUrl = process.env.FRONTEND_URL;
 export const port = process.env.PORT;

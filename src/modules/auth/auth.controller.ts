@@ -54,7 +54,7 @@ export const signinController = async (
     }
 
     // Authenticate user and generate JWT
-    const { user, token } = await signinService(parsedBody.data, req);
+    const { token } = await signinService(parsedBody.data, req);
 
     // Set the JWT in an HTTP-only cookie
     res.cookie("token", token , {

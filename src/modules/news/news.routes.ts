@@ -7,14 +7,22 @@ import {
   deleteNewsController,
   getNewsByIdController,
   updateNewsController,
+
+  getNewsByTitleController
 } from "./news.controller";
 
 const newsRoutes: Router = Router();
 
 newsRoutes.post("/news/create", createNewsController);
 newsRoutes.get("/news", getAllNewsController);
+
+
+
+newsRoutes.get("/news/title", getNewsByTitleController);
+
 newsRoutes.get("/news/:id", getNewsByIdController);
 newsRoutes.put("/news/:id", updateNewsController);
 newsRoutes.delete("/news/:id", deleteNewsController);
+
 
 export default newsRoutes;

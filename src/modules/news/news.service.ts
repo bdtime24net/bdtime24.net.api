@@ -74,13 +74,13 @@ export const getAllNewsService = async (
   // Calculate next and previous page links
   const nextPage =
     skip + limit < total
-      ? `/api/v1/news?page=${
+      ? `/api/news?page=${
           page + 1
         }&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
       : null;
   const prevPage =
     page > 1
-      ? `/api/v1/news?page=${
+      ? `/api/news?page=${
           page - 1
         }&limit=${limit}&sortField=${sortField}&sortOrder=${sortOrder}`
       : null;
@@ -101,6 +101,21 @@ export const getNewsByIdService = async (id: string): Promise<INews | null> => {
   }
   return article;
 };
+
+// Service function to get a single news article by title
+
+export const getNewsByTitleService = async (title: string): Promise<INews | null> => {
+  const article = await Article.findOne({ title });
+  if (!article) {
+    throw new CustomError(404, "Article not found");
+  }
+  return article;
+};
+// service function to get latest news
+
+// service function to get news by category
+
+// service function to get news by author
 
 // Service function to update a news article by ID
 export const updateNewsService = async (
