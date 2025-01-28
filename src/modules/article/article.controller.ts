@@ -112,6 +112,8 @@ export const getArticleBySlugController = async (req: Request, res: Response) =>
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 // // Controller function to get a single article
 // export const getArticleByIdController = async (
 //   req: Request,
@@ -134,24 +136,19 @@ export const getArticleBySlugController = async (req: Request, res: Response) =>
 
 
 export const getLatestArticlesController = async (req: Request, res: Response) => {
-  const { limit } = req.query; // You can pass the limit as a query parameter
-
-  const limitNumber = limit ? parseInt(limit as string) : 10; // Default to 10 if no limit is provided
-
   try {
-    const articles = await getLatestArticlesService(limitNumber);
-    
-    return res.status(200).json({
-      success: true,
-      data: articles,
-      message: "Latest articles fetched successfully",
-    });
+    const articles = await getLatestArticlesService();
+
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    res.status(200).json({ data: articles });
   } catch (error) {
     console.error("Error in getLatestArticlesController:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 // Controller function to update a article
 export const updateArticleController = async (

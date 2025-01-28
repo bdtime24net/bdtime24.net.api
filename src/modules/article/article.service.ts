@@ -147,7 +147,7 @@ export const getArticleBySlugService = async (slug: string): Promise<IArticle | 
 
 
 // Service function to get latest articles
-export const getLatestArticlesService = async (limit: number = 10): Promise<IArticle[]> => {
+export const getLatestArticlesService = async (limit: number = 2): Promise<IArticle[]> => {
   try {
     const articles = await prisma.article.findMany({
       orderBy: {
