@@ -11,6 +11,7 @@ export const createArticleService = async (aeticleData: IArticle) => {
  }) 
  
  if (existingArticle) {
+  console.log('Already exists')
   throw new Error("Article already exists");
  }
 
@@ -130,8 +131,8 @@ export const getArticleByIdService = async (id: string): Promise<IArticle | null
     return article;
     
   } catch (error) {
-    console.error("Error fetching article by slug:", error);
-    throw new Error("Unable to fetch article by slug");
+    console.error("Error fetching article by id:", error);
+    throw new Error("Unable to fetch article by id");
   }
 };
 
