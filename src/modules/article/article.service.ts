@@ -115,7 +115,7 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
      hasPrevPage,
      nextPage: hasNextPage ? page + 1 : null,
      prevPage: hasPrevPage ? page - 1 : null,
-     articles,
+     articles: articles || [],
    }
  };
 };
@@ -126,6 +126,7 @@ export const getArticleBySlugService = async (slug: string): Promise<IArticle | 
     const article = await prisma.article.findUnique({
       where: { slug },
     });
+
 
     return article;
     

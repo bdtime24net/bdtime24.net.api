@@ -49,7 +49,14 @@ export const getArticlesController = async (
     
     return res.status(200).json({
       success: true,
-      ...result,
+      totalCount: result.metadata.totalCount,
+      totalPages: result.metadata.totalPages,
+      currentPage: result.metadata.currentPage,
+      hasNextPage: result.metadata.hasNextPage,
+      hasPrevPage: result.metadata.hasPrevPage,
+      nextPage: result.metadata.nextPage,
+      prevPage: result.metadata.prevPage,
+      articles: result.metadata.articles, // Articles array
       message: "Articles retrieved successfully"
     });
   } catch (error) {
