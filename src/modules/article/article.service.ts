@@ -107,7 +107,6 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
  const hasPrevPage = page > 1;
 
  return {
-   articles,
    metadata: {
      totalCount,
      totalPages,
@@ -116,6 +115,7 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
      hasPrevPage,
      nextPage: hasNextPage ? page + 1 : null,
      prevPage: hasPrevPage ? page - 1 : null,
+     articles,
    }
  };
 };
