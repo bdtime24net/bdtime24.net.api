@@ -23,11 +23,10 @@ export declare const getArticlesService: (articleData: IGetArticlesOptions) => P
         }[];
     };
 }>;
-export declare const getArticleBySlugService: (slug: string) => Promise<IArticle | null>;
+export declare const getArticleByIdService: (id: string) => Promise<IArticle | null>;
 export declare const updateArticleService: (id: string, articleData: IArticle) => Promise<{
     id: string;
     headline: string;
-    slug: string;
     keywords: string[];
     sourceName: string;
     url: string;
@@ -42,7 +41,6 @@ export declare const updateArticleService: (id: string, articleData: IArticle) =
 export declare const deleteArticleService: (id: string) => Promise<{
     id: string;
     headline: string;
-    slug: string;
     keywords: string[];
     sourceName: string;
     url: string;

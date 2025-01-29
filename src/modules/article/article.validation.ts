@@ -7,12 +7,6 @@ export const ArticleSchema = z.object({
       invalid_type_error: "Headline must be a string",
     })
     .min(1, "Headline cannot be empty"),
-  slug: z
-    .string({
-      required_error: "Slug is required",
-      invalid_type_error: "Slug must be a string",
-    })
-    .min(1, "Slug cannot be empty"), // Ensure slug is required
   keywords: z.array(z.string()).optional(),
   description: z
     .string({

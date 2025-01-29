@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createArticleService, deleteArticleService, getArticleBySlugService, getArticlesService, updateArticleService } from "./article.service";
+import { createArticleService, deleteArticleService, getArticleByIdService, getArticlesService, updateArticleService } from "./article.service";
 import { ArticleSchema, GetArticlesOptionsSchema } from "./article.validation";
 
 // Controller function to create a new article
@@ -65,16 +65,16 @@ export const getArticlesController = async (
 };
 
 
-// Controller function to get slugs articles
-export const getArticleBySlugController = async (req: Request, res: Response) => {
-  const { slug } = req.params;
+// Controller function to get id articles
+export const getArticleByIdController = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-  if (!slug) {
-    return res.status(400).json({ message: "Slug parameter is required" });
+  if (!id) {
+    return res.status(400).json({ message: "id parameter is required" });
   }
 
   try {
-    const article = await getArticleBySlugService(slug);
+    const article = await getArticleByIdService(id);
 
     if (!article) {
       return res.status(404).json({ message: "Article not found" });

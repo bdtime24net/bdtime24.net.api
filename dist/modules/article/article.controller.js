@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticleController = exports.updateArticleController = exports.getArticleBySlugController = exports.getArticlesController = exports.createArticleController = void 0;
+exports.deleteArticleController = exports.updateArticleController = exports.getArticleByIdController = exports.getArticlesController = exports.createArticleController = void 0;
 const article_service_1 = require("./article.service");
 const article_validation_1 = require("./article.validation");
 const createArticleController = async (req, res, next) => {
@@ -35,7 +35,14 @@ const getArticlesController = async (req, res, next) => {
         const result = await (0, article_service_1.getArticlesService)(validatedOptions);
         return res.status(200).json({
             success: true,
-            ...result,
+            totalCount: result.metadata.totalCount,
+            totalPages: result.metadata.totalPages,
+            currentPage: result.metadata.currentPage,
+            hasNextPage: result.metadata.hasNextPage,
+            hasPrevPage: result.metadata.hasPrevPage,
+            nextPage: result.metadata.nextPage,
+            prevPage: result.metadata.prevPage,
+            articles: result.metadata.articles,
             message: "Articles retrieved successfully"
         });
     }
@@ -44,13 +51,13 @@ const getArticlesController = async (req, res, next) => {
     }
 };
 exports.getArticlesController = getArticlesController;
-const getArticleBySlugController = async (req, res) => {
-    const { slug } = req.params;
-    if (!slug) {
-        return res.status(400).json({ message: "Slug parameter is required" });
+const getArticleByIdController = async (req, res) => {
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).json({ message: "id parameter is required" });
     }
     try {
-        const article = await (0, article_service_1.getArticleBySlugService)(slug);
+        const article = await (0, article_service_1.getArticleByIdService)(id);
         if (!article) {
             return res.status(404).json({ message: "Article not found" });
         }
@@ -61,7 +68,7 @@ const getArticleBySlugController = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
-exports.getArticleBySlugController = getArticleBySlugController;
+exports.getArticleByIdController = getArticleByIdController;
 const updateArticleController = async (req, res, next) => {
     try {
         const { id } = req.params;

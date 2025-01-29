@@ -76,7 +76,6 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
    : {
        id: true,
        headline: true,
-       slug: true,
        description: true,
        sourceName: true,
        url: true,
@@ -120,11 +119,11 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
  };
 };
 
-// Service function to get slugs articles
-export const getArticleBySlugService = async (slug: string): Promise<IArticle | null> => {
+// Service function to get by id
+export const getArticleByIdService = async (id: string): Promise<IArticle | null> => {
   try {
     const article = await prisma.article.findUnique({
-      where: { slug },
+      where: { id },
     });
 
 

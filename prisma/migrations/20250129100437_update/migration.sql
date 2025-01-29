@@ -30,7 +30,6 @@ CREATE TABLE "NewsCategory" (
 CREATE TABLE "Article" (
     "id" TEXT NOT NULL,
     "headline" TEXT NOT NULL,
-    "slug" TEXT NOT NULL,
     "keywords" TEXT[],
     "sourceName" TEXT NOT NULL,
     "url" TEXT NOT NULL,
@@ -71,9 +70,6 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "NewsCategory_name_key" ON "NewsCategory"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Article_slug_key" ON "Article"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");

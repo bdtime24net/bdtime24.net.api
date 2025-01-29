@@ -9,12 +9,6 @@ exports.ArticleSchema = zod_1.z.object({
         invalid_type_error: "Headline must be a string",
     })
         .min(1, "Headline cannot be empty"),
-    slug: zod_1.z
-        .string({
-        required_error: "Slug is required",
-        invalid_type_error: "Slug must be a string",
-    })
-        .min(1, "Slug cannot be empty"),
     keywords: zod_1.z.array(zod_1.z.string()).optional(),
     description: zod_1.z
         .string({

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteArticleService = exports.updateArticleService = exports.getArticleBySlugService = exports.getArticlesService = exports.createArticleService = void 0;
+exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticlesService = exports.createArticleService = void 0;
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const createArticleService = async (aeticleData) => {
     const existingArticle = await prisma_1.default.article.findFirst({
@@ -92,15 +92,15 @@ const getArticlesService = async (articleData) => {
             hasPrevPage,
             nextPage: hasNextPage ? page + 1 : null,
             prevPage: hasPrevPage ? page - 1 : null,
-            articles,
+            articles: articles || [],
         }
     };
 };
 exports.getArticlesService = getArticlesService;
-const getArticleBySlugService = async (slug) => {
+const getArticleByIdService = async (id) => {
     try {
         const article = await prisma_1.default.article.findUnique({
-            where: { slug },
+            where: { id },
         });
         return article;
     }
@@ -109,7 +109,7 @@ const getArticleBySlugService = async (slug) => {
         throw new Error("Unable to fetch article by slug");
     }
 };
-exports.getArticleBySlugService = getArticleBySlugService;
+exports.getArticleByIdService = getArticleByIdService;
 const updateArticleService = async (id, articleData) => {
     const article = await prisma_1.default.article.update({
         where: { id },
