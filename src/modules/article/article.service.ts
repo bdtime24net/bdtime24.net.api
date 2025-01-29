@@ -28,7 +28,7 @@ export const createArticleService = async (aeticleData: IArticle) => {
 
 
 // Service function to get all articles
-export const getArticlesService = async (articleData: IGetArticlesOptions & { syncMode?: boolean }) => {
+export const getArticlesService = async (articleData: IGetArticlesOptions) => {
   const {
     page = 1,
     limit = 10,
@@ -40,113 +40,85 @@ export const getArticlesService = async (articleData: IGetArticlesOptions & { sy
     category = '',
     author = '',
     date = {},
-    syncMode = false, // ডিফল্ট অ্যাসিনক্রোনাস
+    syncMode = false,
   } = articleData;
 
   const skip = (page - 1) * limit;
 
-  // Build filters
-  const where: any = {};
-  if (query) {
-    where.OR = [
-      { title: { contains: query, mode: 'insensitive' } },
-      { description: { contains: query, mode: 'insensitive' } }
-    ];
-  }
-  if (search) {
-    where.AND = [
-      { title: { contains: search, mode: 'insensitive' } }
-    ];
-  }
-  if (filter) {
-    Object.assign(where, filter);
-  }
-  if (category) {
-    where.category = category;
-  }
-  if (author) {
-    where.author = author;
-  }
-  if (date.from || date.to) {
-    where.date = {
-      ...(date.from && { gte: date.from }),
-      ...(date.to && { lte: date.to }),
-    };
-  }
-
-  // Get the total count of articles
-  let totalCount = 0;
-  if (!syncMode) {
-    // অ্যাসিনক্রোনাস (ডিফল্ট)
-    totalCount = await prisma.article.count({ where });
-  } else {
-    // সিনক্রোনাস (অপশনাল)
-    prisma.article.count({ where }).then((count) => {
-      totalCount = count;
-    });
-  }
-
-  // Determine valid sort field
-  const validSortFields = ['id', 'title', 'description', 'category', 'author', 'publishedAt', 'updatedAt'];
-  const sortField = validSortFields.includes(sort.field) ? sort.field : 'updatedAt';
-
-  // Fetch the paginated articles
-  const articles = syncMode
-    ? prisma.article.findMany({
-        where,
-        skip,
-        take: limit,
-        select: fields.length > 0 ? fields.reduce((acc, field) => {
-          return acc;
-        }, {
-          id: true,
-          title: true,
-          description: true,
-          category: true,
-          author: true,
-          publishedAt: true,
-          updatedAt: true
-        }) : undefined,
-        orderBy: {
-          [sortField]: sort.order,
-        },
-      })
-    : await prisma.article.findMany({
-        where,
-        skip,
-        take: limit,
-        select: fields.length > 0 ? fields.reduce((acc, field) => {
-          return acc;
-        }, {
-          id: true,
-          title: true,
-          description: true,
-          category: true,
-          author: true,
-          publishedAt: true,
-          updatedAt: true
-        }) : undefined,
-        orderBy: {
-          [sortField]: sort.order,
-        },
-      });
-
-  // Generate pagination metadata
-  const totalPages = Math.ceil(totalCount / limit);
-  const hasNextPage = page < totalPages;
-  const hasPrevPage = page > 1;
-  const nextLink = hasNextPage ? `/articles?page=${page + 1}&limit=${limit}` : null;
-  const prevLink = hasPrevPage ? `/articles?page=${page - 1}&limit=${limit}` : null;
-
-  return {
-    articles,
-    totalCount,
-    totalPages,
-    nextLink,
-    prevLink
+   // Build where clause
+   const where: any = {
+    ...(query && {
+      OR: [
+        { headline: { contains: query, mode: 'insensitive' } },
+        { description: { contains: query, mode: 'insensitive' } }
+      ]
+    }),
+    ...(search && {
+      headline: { contains: search, mode: 'insensitive' }
+    }),
+    ...(category && { categoryId: category }),
+    ...(author && { userId: author }),
+    ...(date.from || date.to) && {
+      createdAt: {
+        ...(date.from && { gte: new Date(date.from) }),
+        ...(date.to && { lte: new Date(date.to) }),
+      }
+    },
+    ...filter
   };
-};
 
+   // Build select object based on requested fields
+   const select = fields.length > 0
+   ? fields.reduce((acc: Record<string, boolean>, field: string) => {
+       acc[field] = true;
+       return acc;
+     }, {})
+   : {
+       id: true,
+       headline: true,
+       slug: true,
+       description: true,
+       sourceName: true,
+       url: true,
+       urlToImage: true,
+       categoryId: true,
+       userId: true,
+       tagId: true,
+       keywords: true,
+       publishedAt: true,
+       updatedAt: true,
+     };
+
+ const [totalCount, articles] = await Promise.all([
+   prisma.article.count({ where }),
+   prisma.article.findMany({
+     where,
+     skip,
+     take: limit,
+     select,
+     orderBy: {
+       [sort.field]: sort.order,
+     },
+   }),
+ ]);
+
+ const totalPages = Math.ceil(totalCount / limit);
+ const hasNextPage = page < totalPages;
+ const hasPrevPage = page > 1;
+
+ return {
+   articles,
+   metadata: {
+     totalCount,
+     totalPages,
+     currentPage: page,
+     hasNextPage,
+     hasPrevPage,
+     nextPage: hasNextPage ? page + 1 : null,
+     prevPage: hasPrevPage ? page - 1 : null,
+   }
+ };
+};
 
 // Service function to get slugs articles
 export const getArticleBySlugService = async (slug: string): Promise<IArticle | null> => {

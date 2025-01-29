@@ -65,8 +65,8 @@ const SortSchema = z.object({
 });
 
 const DateRangeSchema = z.object({
-  from: z.date().optional(),
-  to: z.date().optional(),
+  from: z.string().datetime().optional(),
+  to: z.string().datetime().optional(),
 });
 
 // Main schema for GetArticlesOptions
@@ -77,14 +77,16 @@ export const GetArticlesOptionsSchema = z.object({
     })
     .int("Page must be an integer")
     .min(1, "Page must be at least 1")
-    .optional(),
+    .optional()
+    .default(1), // Default to page 1
     
   limit: z
     .number({
       invalid_type_error: "Limit must be a number",
     })
     .min(1, "Limit must be at least 1")
-    .optional(),
+    .optional()
+    .default(10), // Default to 10 items per page
   fields: z.array(z.string()).optional(), // Specify which fields to return
   sort: SortSchema.optional(), // Sorting options
   query: z.string().optional(), // General search query
@@ -93,6 +95,7 @@ export const GetArticlesOptionsSchema = z.object({
   category: z.string().optional(), // Filter by category
   author: z.string().optional(), // Filter by author
   date: DateRangeSchema.optional(), // Filter by date range
+  syncMode: z.boolean().optional().default(false), // Synchronous mode
 });
 
 

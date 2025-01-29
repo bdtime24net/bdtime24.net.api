@@ -21,7 +21,7 @@ authRoutes.put("/update/:id", veryfyToken, updateController);
 authRoutes.put("/change-password/:id", veryfyToken, changePasswordController);
 authRoutes.delete("/delete/:id", veryfyToken, deleteAccountController);
 
-authRoutes.post("/forgot-password", veryfyToken, forgotPasswordController);
+authRoutes.post("/forgot-password", forgotPasswordController);
 
 authRoutes.post("/logout", veryfyToken, logoutController);
 

@@ -36,37 +36,21 @@ export const getArticlesController = async (
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-    // Extract and parse query parameters
     const queryParams = {
       ...req.query,
-      page: req.query.page ? parseInt(req.query.page as string) : 1, // পৃষ্ঠা প্যারামিটার
-      limit: req.query.limit ? parseInt(req.query.limit as string) : 10, // সীমা প্যারামিটার
-      fields: req.query.fields ? (req.query.fields as string).split(",") : [], // ক্ষেত্র প্যারামিটার
-      syncMode: req.query.syncMode === 'true', // সিনক্রোনাস মোড প্যারামিটার
+      page: req.query.page ? parseInt(req.query.page as string) : undefined,
+      limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
+      fields: req.query.fields ? (req.query.fields as string).split(",") : undefined,
+      syncMode: req.query.syncMode === 'true'
     };
 
-    // Validate and parse query parameters using Zod schema
-    const parsedQuery = GetArticlesOptionsSchema.safeParse(queryParams);
-
-    if (!parsedQuery.success) {
-      return res.status(400).json({ error: parsedQuery.error.errors });
-    }
-
-    // Pass validated parameters to the service
-    const result = await getArticlesService({
-      ...parsedQuery.data,
-      syncMode: queryParams.syncMode, // পদ্ধতি পাস করুন
-    });
-
+    const validatedOptions = GetArticlesOptionsSchema.parse(queryParams);
+    const result = await getArticlesService(validatedOptions);
+    
     return res.status(200).json({
       success: true,
-      totalCount: result.totalCount,
-      totalPages: result.totalPages,
-      nextLink: result.nextLink,
-      prevLink: result.prevLink,
-      message: "Articles retrieved successfully",
-      error: null,
-      data: result.articles,
+      ...result,
+      message: "Articles retrieved successfully"
     });
   } catch (error) {
     next(error);
