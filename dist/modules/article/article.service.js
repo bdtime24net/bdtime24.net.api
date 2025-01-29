@@ -56,7 +56,6 @@ const getArticlesService = async (articleData) => {
         : {
             id: true,
             headline: true,
-            slug: true,
             description: true,
             sourceName: true,
             url: true,
