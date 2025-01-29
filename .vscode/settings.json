@@ -1,6 +1,0 @@
-{
-    "yaml.schemas": {
-        "file:///home/zobaidul/.vscode/extensions/docsmsft.docs-yaml-1.0.4/dist/toc.schema.json": "/toc\\.yml/i",
-        "https://json.schemastore.org/prometheus.rules.test.json": "file:///media/zobaidul/development/bdtime24/bdtime24.net.api/.github/workflows/index.test.yaml"
-    }
-}
