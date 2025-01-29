@@ -34,11 +34,12 @@ model NewsCategory {
 model Article {
   id          String       @id @default(cuid())
   headline    String
+  description String
+  reporter    String?
   keywords    String[]
   sourceName  String
   url         String
   urlToImage  String[]
-  description String
   categoryId  String
   userId      String
   tagId       String
@@ -48,6 +49,10 @@ model Article {
   Tag         Tag          @relation(fields: [tagId], references: [id])
   User        User         @relation(fields: [userId], references: [id])
   Comment     Comment[]
+
+  @@index([categoryId])
+  @@index([userId])
+  @@index([tagId])
 }
 
 model Tag {
@@ -71,4 +76,5 @@ model Comment {
 enum Role {
   USER
   ADMIN
+  EDITOR
 }

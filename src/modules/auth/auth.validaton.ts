@@ -48,7 +48,7 @@ export const updateValidation = z.object({
       invalid_type_error: "Username must be a string",
     })
     .min(1, "Username cannot be empty"),
-  role: z.enum(["USER", "ADMIN"]).default("USER"),
+  role: z.enum(["USER", "ADMIN", "EDITOR"]).default("USER"),
 });
 
 export type Iupdate = z.infer<typeof updateValidation>;
