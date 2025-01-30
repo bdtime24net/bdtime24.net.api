@@ -35,7 +35,6 @@ model Article {
   id          String       @id @default(cuid())
   headline    String
   description String
-  slug        String       @unique
   reporter    String
   keywords    String[]
   sourceName  String
@@ -51,9 +50,6 @@ model Article {
   User        User         @relation(fields: [userId], references: [id])
   Comment     Comment[]
 
-  @@index([categoryId])
-  @@index([tagId])
-  @@index([userId])
 }
 
 model Tag {
@@ -77,5 +73,4 @@ model Comment {
 enum Role {
   USER
   ADMIN
-  EDITOR
 }

@@ -5,38 +5,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticlesService = exports.createArticleService = void 0;
 const prisma_1 = __importDefault(require("../../utils/prisma"));
-const createArticleService = async (aeticleData) => {
-    const existingArticle = await prisma_1.default.article.findFirst({
+const createArticleService = async (articleData) => {
+    const existingArticle = await prisma_1.default.article.findMany({
         where: {
-            headline: aeticleData.headline
-        }
+            headline: articleData.headline,
+            url: articleData.url
+        },
     });
     if (existingArticle) {
         throw new Error("Article already exists");
     }
     const article = await prisma_1.default.article.create({
-        data: {
-            ...aeticleData,
-        },
+        data: articleData,
         select: {
-            headline: true
-        }
+            headline: true,
+        },
     });
     return article;
 };
 exports.createArticleService = createArticleService;
 const getArticlesService = async (articleData) => {
-    const { page = 1, limit = 10, fields = [], sort = { field: 'updatedAt', order: 'desc' }, query = '', search = '', filter = {}, category = '', author = '', date = {}, syncMode = false, } = articleData;
+    const { page = 1, limit = 10, fields = [], sort = { field: "updatedAt", order: "desc" }, query = "", search = "", filter = {}, category = "", author = "", date = {}, } = articleData;
     const skip = (page - 1) * limit;
     const where = {
         ...(query && {
             OR: [
-                { headline: { contains: query, mode: 'insensitive' } },
-                { description: { contains: query, mode: 'insensitive' } }
-            ]
+                { headline: { contains: query, mode: "insensitive" } },
+                { description: { contains: query, mode: "insensitive" } },
+            ],
         }),
         ...(search && {
-            headline: { contains: search, mode: 'insensitive' }
+            headline: { contains: search, mode: "insensitive" },
         }),
         ...(category && { categoryId: category }),
         ...(author && { userId: author }),
@@ -44,9 +43,9 @@ const getArticlesService = async (articleData) => {
             createdAt: {
                 ...(date.from && { gte: new Date(date.from) }),
                 ...(date.to && { lte: new Date(date.to) }),
-            }
+            },
         },
-        ...filter
+        ...filter,
     };
     const select = fields.length > 0
         ? fields.reduce((acc, field) => {
@@ -92,21 +91,12 @@ const getArticlesService = async (articleData) => {
             nextPage: hasNextPage ? page + 1 : null,
             prevPage: hasPrevPage ? page - 1 : null,
             articles,
-        }
+        },
     };
 };
 exports.getArticlesService = getArticlesService;
 const getArticleByIdService = async (id) => {
-    try {
-        const article = await prisma_1.default.article.findUnique({
-            where: { id },
-        });
-        return article;
-    }
-    catch (error) {
-        console.error("Error fetching article by id:", error);
-        throw new Error("Unable to fetch article by id");
-    }
+    return prisma_1.default.article.findUnique({ where: { id } });
 };
 exports.getArticleByIdService = getArticleByIdService;
 const updateArticleService = async (id, articleData) => {

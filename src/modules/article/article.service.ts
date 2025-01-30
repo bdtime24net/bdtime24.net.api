@@ -2,30 +2,28 @@ import prisma from "../../utils/prisma";
 import { IArticle, IGetArticlesOptions } from "./article.validation";
 
 // Service function to create a new article
-export const createArticleService = async (aeticleData: IArticle) => {
-//  // check if the article already exists
- const existingArticle = await prisma.article.findFirst({
-  where: {
-   headline: aeticleData.headline
-  }
- }) 
- 
- if (existingArticle) {
-  throw new Error("Article already exists");
- }
+export const createArticleService = async (articleData: IArticle) => {
+  // Check if the article already exists
+  const existingArticle = await prisma.article.findMany({
+    where: {
+      headline: articleData.headline,
+      url: articleData.url
+    },
+  });
 
- // create article
- const article = await prisma.article.create({
-  data: {
-   ...aeticleData,
-   } as any,
-  select: {
-    headline: true
+  if (existingArticle) {
+    throw new Error("Article already exists");
   }
- });
- return article;
+
+  // Create article
+  const article = await prisma.article.create({
+    data: articleData,
+    select: {
+      headline: true,
+    },
+  });
+  return article;
 };
-
 
 // Service function to get all articles
 export const getArticlesService = async (articleData: IGetArticlesOptions) => {
@@ -33,28 +31,27 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     page = 1,
     limit = 10,
     fields = [],
-    sort = { field: 'updatedAt', order: 'desc' },
-    query = '',
-    search = '',
+    sort = { field: "updatedAt", order: "desc" },
+    query = "",
+    search = "",
     filter = {},
-    category = '',
-    author = '',
+    category = "",
+    author = "",
     date = {},
-    syncMode = false,
   } = articleData;
 
   const skip = (page - 1) * limit;
 
-   // Build where clause
-   const where: any = {
+  // Build where clause
+  const where: any = {
     ...(query && {
       OR: [
-        { headline: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } }
-      ]
+        { headline: { contains: query, mode: "insensitive" } },
+        { description: { contains: query, mode: "insensitive" } },
+      ],
     }),
     ...(search && {
-      headline: { contains: search, mode: 'insensitive' }
+      headline: { contains: search, mode: "insensitive" },
     }),
     ...(category && { categoryId: category }),
     ...(author && { userId: author }),
@@ -62,83 +59,70 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
       createdAt: {
         ...(date.from && { gte: new Date(date.from) }),
         ...(date.to && { lte: new Date(date.to) }),
-      }
+      },
     },
-    ...filter
+    ...filter,
   };
 
-   // Build select object based on requested fields
-   const select = fields.length > 0
-   ? fields.reduce((acc: Record<string, boolean>, field: string) => {
-       acc[field] = true;
-       return acc;
-     }, {})
-   : {
-       id: true,
-       headline: true,
-       description: true,
-       sourceName: true,
-       url: true,
-       urlToImage: true,
-       categoryId: true,
-       userId: true,
-       tagId: true,
-       keywords: true,
-       publishedAt: true,
-       updatedAt: true,
-     };
+  // Build select object based on requested fields
+  const select =
+    fields.length > 0
+      ? fields.reduce((acc: Record<string, boolean>, field: string) => {
+          acc[field] = true;
+          return acc;
+        }, {})
+      : {
+          id: true,
+          headline: true,
+          description: true,
+          sourceName: true,
+          url: true,
+          urlToImage: true,
+          categoryId: true,
+          userId: true,
+          tagId: true,
+          keywords: true,
+          publishedAt: true,
+          updatedAt: true,
+        };
 
- const [totalCount, articles] = await Promise.all([
-   prisma.article.count({ where }),
-   prisma.article.findMany({
-     where,
-     skip,
-     take: limit,
-     select,
-     orderBy: {
-       [sort.field]: sort.order,
-     },
-   }),
- ]);
+  const [totalCount, articles] = await Promise.all([
+    prisma.article.count({ where }),
+    prisma.article.findMany({
+      where,
+      skip,
+      take: limit,
+      select,
+      orderBy: {
+        [sort.field]: sort.order,
+      },
+    }),
+  ]);
 
- const totalPages = Math.ceil(totalCount / limit);
- const hasNextPage = page < totalPages;
- const hasPrevPage = page > 1;
+  const totalPages = Math.ceil(totalCount / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
 
- return {
-   metadata: {
-     totalCount,
-     totalPages,
-     currentPage: page,
-     hasNextPage,
-     hasPrevPage,
-     nextPage: hasNextPage ? page + 1 : null,
-     prevPage: hasPrevPage ? page - 1 : null,
-     articles,
-   }
- };
+  return {
+    metadata: {
+      totalCount,
+      totalPages,
+      currentPage: page,
+      hasNextPage,
+      hasPrevPage,
+      nextPage: hasNextPage ? page + 1 : null,
+      prevPage: hasPrevPage ? page - 1 : null,
+      articles,
+    },
+  };
 };
 
-// Service function to get ids articles
+// Service function to get an article by ID
 export const getArticleByIdService = async (id: string): Promise<IArticle | null> => {
-  try {
-    const article = await prisma.article.findUnique({
-      where: { id },
-    });
-
-    return article;
-    
-  } catch (error) {
-    console.error("Error fetching article by id:", error);
-    throw new Error("Unable to fetch article by id");
-  }
+  return prisma.article.findUnique({ where: { id } });
 };
 
-
-
-
-
-// Service function to update a article
+// Service function to update an article
 export const updateArticleService = async (id: string, articleData: IArticle) => {
   const article = await prisma.article.update({
     where: { id },
@@ -150,8 +134,7 @@ export const updateArticleService = async (id: string, articleData: IArticle) =>
   return article;
 };
 
-
-// Service function to delete a article
+// Service function to delete an article
 export const deleteArticleService = async (id: string) => {
   const article = await prisma.article.delete({
     where: { id },

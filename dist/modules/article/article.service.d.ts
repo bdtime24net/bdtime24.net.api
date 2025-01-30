@@ -1,5 +1,5 @@
 import { IArticle, IGetArticlesOptions } from "./article.validation";
-export declare const createArticleService: (aeticleData: IArticle) => Promise<{
+export declare const createArticleService: (articleData: IArticle) => Promise<{
     headline: string;
 }>;
 export declare const getArticlesService: (articleData: IGetArticlesOptions) => Promise<{
@@ -28,7 +28,6 @@ export declare const updateArticleService: (id: string, articleData: IArticle) =
     id: string;
     headline: string;
     description: string;
-    slug: string;
     reporter: string;
     keywords: string[];
     sourceName: string;
@@ -44,7 +43,6 @@ export declare const deleteArticleService: (id: string) => Promise<{
     id: string;
     headline: string;
     description: string;
-    slug: string;
     reporter: string;
     keywords: string[];
     sourceName: string;
