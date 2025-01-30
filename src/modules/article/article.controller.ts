@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createArticleService, deleteArticleService, getArticleByIdService, getArticlesService, updateArticleService } from "./article.service";
-import { ArticleSchema, GetArticlesOptionsSchema, updateArticleSchema } from "./article.validation";
-import { ZodError } from "zod";
+import { ArticleSchema, GetArticlesOptionsSchema } from "./article.validation";
 
 // Controller function to create a new article
 export const createArticleController = async (
@@ -14,19 +13,14 @@ export const createArticleController = async (
     const parsedBody = ArticleSchema.safeParse(req.body);
 
     if (!parsedBody.success) {
-      return res.status(400).json({
-        success: false,
-        error: parsedBody.error.format(),
-        message: "Invalid input data",
-      });
+      return res.status(400).json({ error: parsedBody.error.message });
     }
-
 
     const article = await createArticleService(parsedBody.data);
     return res.status(201).json({
       success: true,
-      message: "Article created successfully",
       data: article,
+      message: "Article created successfully",
       error: null,
     });
   } catch (error) {
@@ -42,60 +36,50 @@ export const getArticlesController = async (
   next: NextFunction
 ): Promise<Response | void> => {
   try {
-    // Convert query params into the correct data types
     const queryParams = {
       ...req.query,
-      page: req.query.page ? parseInt(req.query.page as string, 10) : undefined,
-      limit: req.query.limit ? parseInt(req.query.limit as string, 10) : undefined,
+      page: req.query.page ? parseInt(req.query.page as string) : undefined,
+      limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
       fields: req.query.fields ? (req.query.fields as string).split(",") : undefined,
+      syncMode: req.query.syncMode === 'true'
     };
 
-    // Validate and parse query params
     const validatedOptions = GetArticlesOptionsSchema.parse(queryParams);
     const result = await getArticlesService(validatedOptions);
-
+    
     return res.status(200).json({
       success: true,
-      message: "Articles retrieved successfully",
-      ...result.metadata,
-      articles: result.articles,
+      ...result,
+      message: "Articles retrieved successfully"
     });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return res.status(400).json({ success: false, error: error.format(), message: "Validation error" });
-    }
     next(error);
   }
 };
 
 
-// Controller function to get an article by ID
-export const getArticleByIdController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<Response | void> => {
+// Controller function to get id articles
+export const getArticleByIdController = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "ID parameter is required" });
+  }
+
   try {
-    const { id } = req.params; // Get article ID from URL
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Article ID is required",
-      });
-    }
-
     const article = await getArticleByIdService(id);
 
-    return res.status(200).json({
-      success: true,
-      message: "Article retrieved successfully",
-      data: article,
-    });
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    return res.status(200).json(article);
   } catch (error) {
-    next(error);
+    console.error("Error in getArticleByIdController:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 
@@ -108,36 +92,20 @@ export const updateArticleController = async (
 ): Promise<Response | void> => {
   try {
     const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Article ID is required",
-      });
-    }
-
-    // Validate request body
-    const parsedBody = updateArticleSchema.safeParse(req.body);
-
+    const parsedBody = ArticleSchema.safeParse(req.body);
     if (!parsedBody.success) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid request data",
-        error: parsedBody.error.format(),
-      });
+      return res.status(400).json({ error: parsedBody.error.message });
     }
-
-    // Update the article
-    const updatedArticle = await updateArticleService(id, parsedBody.data);
-
+    const article = await updateArticleService(id, parsedBody.data);
     return res.status(200).json({
       success: true,
+      data: article,
       message: "Article updated successfully",
-      data: updatedArticle,
+      error: null,
     });
   } catch (error) {
     next(error);
-  }
+  } 
 };
 
 
@@ -149,21 +117,18 @@ export const deleteArticleController = async (
 ): Promise<Response | void> => {
   try {
     const { id } = req.params;
+    
 
     if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Article ID is required",
-      });
+      return res.status(400).json({ error: "Article ID is required" });
     }
 
-    // Delete the article
-    const deletedArticle = await deleteArticleService(id);
-
+    const article = await deleteArticleService(id);
     return res.status(200).json({
       success: true,
+      data: article,
       message: "Article deleted successfully",
-      data: deletedArticle,
+      error: null,
     });
   } catch (error) {
     next(error);

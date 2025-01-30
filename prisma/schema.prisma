@@ -35,7 +35,7 @@ model Article {
   id          String       @id @default(cuid())
   headline    String
   description String
-  reporter    String?
+  reporter    String
   keywords    String[]
   sourceName  String
   url         String
@@ -51,8 +51,8 @@ model Article {
   Comment     Comment[]
 
   @@index([categoryId])
-  @@index([userId])
   @@index([tagId])
+  @@index([userId])
 }
 
 model Tag {

@@ -7,7 +7,6 @@ import { errorHandler } from "./errors";
 import { notFoundHandler } from "../errors/notFoundError";
 import rateLimit from "express-rate-limit";
 
-
 const app: Application = express();
 const doc = YAML.load(`${process.cwd()}/src/docs/swagger.yaml`);
 
