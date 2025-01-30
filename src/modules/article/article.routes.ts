@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createArticleController, getArticlesController, updateArticleController, deleteArticleController, getArticleByIdController } from "./article.controller";
-// import veryfyToken from '../../middlewares/auth.middleware'
+import veryfyToken from '../../middlewares/auth.middleware'
 
 
 
@@ -13,9 +13,9 @@ articleRoutes.get("/article", getArticlesController);
 articleRoutes.get("/article/:id", getArticleByIdController);
 
 
-articleRoutes.put("/article/:id", updateArticleController);
+articleRoutes.put("/article/:id", veryfyToken, updateArticleController);
 
-articleRoutes.delete("/article/:id", deleteArticleController);
+articleRoutes.delete("/article/:id", veryfyToken,  deleteArticleController);
 
 
 

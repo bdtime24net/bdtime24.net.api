@@ -28,6 +28,7 @@ export declare const updateArticleService: (id: string, articleData: IArticle) =
     id: string;
     headline: string;
     description: string;
+    slug: string;
     reporter: string;
     keywords: string[];
     sourceName: string;
@@ -43,6 +44,7 @@ export declare const deleteArticleService: (id: string) => Promise<{
     id: string;
     headline: string;
     description: string;
+    slug: string;
     reporter: string;
     keywords: string[];
     sourceName: string;
