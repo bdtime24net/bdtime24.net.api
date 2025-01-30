@@ -35,6 +35,7 @@ model Article {
   id          String       @id @default(cuid())
   headline    String
   description String
+  slug        String       @unique
   reporter    String
   keywords    String[]
   sourceName  String

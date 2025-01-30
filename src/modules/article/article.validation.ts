@@ -7,7 +7,7 @@ export const ArticleSchema = z.object({
       invalid_type_error: "Headline must be a string",
     })
     .min(1, "Headline cannot be empty"),
-    reporter: z
+  reporter: z
     .string({
       required_error: "Reporter name is required",
       invalid_type_error: "Reporter must be a string",

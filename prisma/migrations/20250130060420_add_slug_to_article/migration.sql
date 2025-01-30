@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN', 'EDITOR');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -30,12 +30,13 @@ CREATE TABLE "NewsCategory" (
 CREATE TABLE "Article" (
     "id" TEXT NOT NULL,
     "headline" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "reporter" TEXT NOT NULL,
     "keywords" TEXT[],
     "sourceName" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "urlToImage" TEXT[],
-    "description" TEXT NOT NULL,
     "categoryId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "tagId" TEXT NOT NULL,
@@ -71,6 +72,18 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "NewsCategory_name_key" ON "NewsCategory"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Article_slug_key" ON "Article"("slug");
+
+-- CreateIndex
+CREATE INDEX "Article_categoryId_idx" ON "Article"("categoryId");
+
+-- CreateIndex
+CREATE INDEX "Article_tagId_idx" ON "Article"("tagId");
+
+-- CreateIndex
+CREATE INDEX "Article_userId_idx" ON "Article"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
