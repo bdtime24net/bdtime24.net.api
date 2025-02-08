@@ -49,7 +49,6 @@ model Article {
   Tag         Tag          @relation(fields: [tagId], references: [id])
   User        User         @relation(fields: [userId], references: [id])
   Comment     Comment[]
-
 }
 
 model Tag {

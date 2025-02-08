@@ -6,10 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteArticleService = exports.updateArticleService = exports.getArticleByIdService = exports.getArticlesService = exports.createArticleService = void 0;
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const createArticleService = async (articleData) => {
-    const existingArticle = await prisma_1.default.article.findMany({
+    const existingArticle = await prisma_1.default.article.findFirst({
         where: {
             headline: articleData.headline,
-            url: articleData.url
         },
     });
     if (existingArticle) {

@@ -4,10 +4,9 @@ import { IArticle, IGetArticlesOptions } from "./article.validation";
 // Service function to create a new article
 export const createArticleService = async (articleData: IArticle) => {
   // Check if the article already exists
-  const existingArticle = await prisma.article.findMany({
+  const existingArticle = await prisma.article.findFirst({
     where: {
       headline: articleData.headline,
-      url: articleData.url
     },
   });
 
