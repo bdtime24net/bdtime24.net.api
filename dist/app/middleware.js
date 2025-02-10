@@ -30,12 +30,11 @@ const express_1 = __importStar(require("express"));
 const express_2 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
-const config_1 = require("../config");
 const express_session_1 = __importDefault(require("express-session"));
 const middleware = [
     (0, morgan_1.default)("dev"),
     (0, cors_1.default)({
-        origin: config_1.corsOrigin,
+        origin: '*',
         methods: ["GET", "POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
     }),

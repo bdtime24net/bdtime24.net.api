@@ -10,7 +10,7 @@ import session from 'express-session';
 const middleware = [
   morgan("dev"),
   cors({
-    origin: corsOrigin,
+    origin: '*',
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
