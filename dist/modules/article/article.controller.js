@@ -29,7 +29,15 @@ const getArticlesController = async (req, res, next) => {
             page: req.query.page ? parseInt(req.query.page) : undefined,
             limit: req.query.limit ? parseInt(req.query.limit) : undefined,
             fields: req.query.fields ? req.query.fields.split(",") : undefined,
-            syncMode: req.query.syncMode === 'true'
+            sort: req.query.sort
+                ? {
+                    field: req.query.sort.field || "updatedAt",
+                    order: req.query.sort.order || "desc",
+                }
+                : undefined,
+            category: Array.isArray(req.query.category) ? req.query.category : typeof req.query.category === 'string' ? req.query.category.split(",") : undefined,
+            tag: Array.isArray(req.query.tag) ? req.query.tag : typeof req.query.tag === 'string' ? req.query.tag.split(",") : undefined,
+            syncMode: req.query.syncMode === "true",
         };
         const validatedOptions = article_validation_1.GetArticlesOptionsSchema.parse(queryParams);
         const result = await (0, article_service_1.getArticlesService)(validatedOptions);

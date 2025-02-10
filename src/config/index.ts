@@ -10,7 +10,7 @@ export const redisUrl: string = process.env.REDIS_URI || "";
 
 //  for Authencticaion and Security
 
-export const corsOrigin = process.env.ORIGIN || "";
+export const corsOrigin = process.env.ORIGIN || "*";
 export const access_token: string = process.env.ACCESS_TOKEN || "";
 export const refresh_token: string = process.env.REFRESH_TOKEN || "";
 export const defaultPass = process.env.DEFAULT_PASS;

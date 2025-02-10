@@ -32,7 +32,7 @@ export const createArticleController = async (
 // Controller function to get all articles
 export const getArticlesController = async (
   req: Request,
-  res: Response,
+  res: Response, 
   next: NextFunction
 ): Promise<Response | void> => {
   try {
@@ -41,8 +41,17 @@ export const getArticlesController = async (
       page: req.query.page ? parseInt(req.query.page as string) : undefined,
       limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
       fields: req.query.fields ? (req.query.fields as string).split(",") : undefined,
-      syncMode: req.query.syncMode === 'true'
+      sort: req.query.sort
+        ? {
+            field: (req.query.sort as any).field || "updatedAt",
+            order: (req.query.sort as any).order || "desc",
+          }
+        : undefined,
+      category: Array.isArray(req.query.category) ? req.query.category : typeof req.query.category === 'string' ? req.query.category.split(",") : undefined,
+      tag: Array.isArray(req.query.tag) ? req.query.tag : typeof req.query.tag === 'string' ? req.query.tag.split(",") : undefined,
+      syncMode: req.query.syncMode === "true",
     };
+    
 
     const validatedOptions = GetArticlesOptionsSchema.parse(queryParams);
     const result = await getArticlesService(validatedOptions);

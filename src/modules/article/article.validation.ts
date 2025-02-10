@@ -92,7 +92,8 @@ export const GetArticlesOptionsSchema = z.object({
   query: z.string().optional(), // General search query
   search: z.string().optional(), // Specific search term
   filter: z.record(z.any()).optional(), // General filters
-  category: z.string().optional(), // Filter by category
+  category: z.union([z.string(), z.array(z.string())]).optional(), // Allow string or array
+  tag: z.union([z.string(), z.array(z.string())]).optional(),  
   author: z.string().optional(), // Filter by author
   date: DateRangeSchema.optional(), // Filter by date range
   syncMode: z.boolean().optional().default(false), // Synchronous mode

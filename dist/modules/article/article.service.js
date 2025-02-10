@@ -24,7 +24,7 @@ const createArticleService = async (articleData) => {
 };
 exports.createArticleService = createArticleService;
 const getArticlesService = async (articleData) => {
-    const { page = 1, limit = 10, fields = [], sort = { field: "updatedAt", order: "desc" }, query = "", search = "", filter = {}, category = "", author = "", date = {}, } = articleData;
+    const { page = 1, limit = 10, fields = [], sort = { field: "updatedAt", order: "desc" }, query = "", search = "", filter = {}, category = "", tag = "", author = "", date = {}, } = articleData;
     const skip = (page - 1) * limit;
     const where = {
         ...(query && {
@@ -36,7 +36,8 @@ const getArticlesService = async (articleData) => {
         ...(search && {
             headline: { contains: search, mode: "insensitive" },
         }),
-        ...(category && { categoryId: category }),
+        ...(category && { categoryId: { in: Array.isArray(category) ? category : [category] } }),
+        ...(tag && { tagId: { in: Array.isArray(tag) ? tag : [tag] } }),
         ...(author && { userId: author }),
         ...(date.from || date.to) && {
             createdAt: {

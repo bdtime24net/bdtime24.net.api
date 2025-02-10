@@ -1,4 +1,4 @@
-import { Isignin, Isignup, Iupdate } from "./auth.validaton";
+import { Isignin, Isignup, Iupdate } from "./auth.validator";
 import bcrypt from "bcryptjs";
 import prisma from "../../utils/prisma";
 import jwt from "jsonwebtoken";

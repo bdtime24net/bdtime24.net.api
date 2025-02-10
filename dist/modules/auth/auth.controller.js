@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logoutController = exports.forgotPasswordController = exports.changePasswordController = exports.deleteAccountController = exports.updateController = exports.signinController = exports.signupController = void 0;
 const auth_service_1 = require("./auth.service");
-const auth_validaton_1 = require("./auth.validaton");
+const auth_validator_1 = require("./auth.validator");
 const signupController = async (req, res, next) => {
     try {
-        const parsedBody = auth_validaton_1.signupValidation.safeParse(req.body);
+        const parsedBody = auth_validator_1.signupValidation.safeParse(req.body);
         if (!parsedBody.success) {
             return res.status(400).json({ error: parsedBody.error.errors });
         }
@@ -24,7 +24,7 @@ const signupController = async (req, res, next) => {
 exports.signupController = signupController;
 const signinController = async (req, res, next) => {
     try {
-        const parsedBody = auth_validaton_1.signinValidation.safeParse(req.body);
+        const parsedBody = auth_validator_1.signinValidation.safeParse(req.body);
         if (!parsedBody.success) {
             return res.status(400).json({ error: parsedBody.error.errors });
         }
@@ -49,7 +49,7 @@ const signinController = async (req, res, next) => {
 exports.signinController = signinController;
 const updateController = async (req, res, next) => {
     try {
-        const parsedBody = auth_validaton_1.updateValidation.safeParse(req.body);
+        const parsedBody = auth_validator_1.updateValidation.safeParse(req.body);
         if (!parsedBody.success) {
             return res
                 .status(400)
@@ -96,7 +96,7 @@ const deleteAccountController = async (req, res, next) => {
 exports.deleteAccountController = deleteAccountController;
 const changePasswordController = async (req, res, next) => {
     try {
-        const parsedBody = auth_validaton_1.changePasswordValidation.safeParse(req.body);
+        const parsedBody = auth_validator_1.changePasswordValidation.safeParse(req.body);
         if (!parsedBody.success) {
             return res.status(400).json({ error: parsedBody.error.errors });
         }

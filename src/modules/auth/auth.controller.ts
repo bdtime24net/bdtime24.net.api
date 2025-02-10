@@ -13,7 +13,7 @@ import {
   signinValidation,
   signupValidation,
   updateValidation,
-} from "./auth.validaton";
+} from "./auth.validator";
 
 export const signupController = async (
   req: Request,

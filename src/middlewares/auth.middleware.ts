@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const veryfyToken = (req: any, res: any, next: any) => {
+const verifyToken = (req: any, res: any, next: any) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -34,4 +34,4 @@ const veryfyToken = (req: any, res: any, next: any) => {
   }
 };
 
-export default veryfyToken;
+export default verifyToken;

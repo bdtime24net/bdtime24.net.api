@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const veryfyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
@@ -31,5 +31,5 @@ const veryfyToken = (req, res, next) => {
         return res.status(401).json({ message: "Unauthorized" });
     }
 };
-exports.default = veryfyToken;
+exports.default = verifyToken;
 //# sourceMappingURL=auth.middleware.js.map

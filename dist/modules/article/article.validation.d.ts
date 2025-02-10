@@ -51,7 +51,8 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
     query: z.ZodOptional<z.ZodString>;
     search: z.ZodOptional<z.ZodString>;
     filter: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodAny>>;
-    category: z.ZodOptional<z.ZodString>;
+    category: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
+    tag: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodArray<z.ZodString, "many">]>>;
     author: z.ZodOptional<z.ZodString>;
     date: z.ZodOptional<z.ZodObject<{
         from: z.ZodOptional<z.ZodString>;
@@ -68,7 +69,7 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
     limit: number;
     page: number;
     syncMode: boolean;
-    category?: string | undefined;
+    category?: string | string[] | undefined;
     sort?: {
         field: string;
         order: "asc" | "desc";
@@ -81,10 +82,11 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
     search?: string | undefined;
     fields?: string[] | undefined;
     query?: string | undefined;
+    tag?: string | string[] | undefined;
     author?: string | undefined;
 }, {
     limit?: number | undefined;
-    category?: string | undefined;
+    category?: string | string[] | undefined;
     sort?: {
         field?: string | undefined;
         order?: "asc" | "desc" | undefined;
@@ -98,6 +100,7 @@ export declare const GetArticlesOptionsSchema: z.ZodObject<{
     fields?: string[] | undefined;
     page?: number | undefined;
     query?: string | undefined;
+    tag?: string | string[] | undefined;
     author?: string | undefined;
     syncMode?: boolean | undefined;
 }>;

@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", routes);
 
+
 app.use(rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
     max: 1000, // Limit each IP to 100 requests per windowMs

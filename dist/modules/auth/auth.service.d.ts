@@ -1,4 +1,4 @@
-import { Isignin, Isignup, Iupdate } from "./auth.validaton";
+import { Isignin, Isignup, Iupdate } from "./auth.validator";
 export declare const signupService: (signupData: Isignup, req: any) => Promise<{
     id: string;
     createdAt: Date;

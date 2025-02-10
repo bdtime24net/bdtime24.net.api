@@ -35,6 +35,7 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     search = "",
     filter = {},
     category = "",
+    tag="",
     author = "",
     date = {},
   } = articleData;
@@ -52,7 +53,9 @@ export const getArticlesService = async (articleData: IGetArticlesOptions) => {
     ...(search && {
       headline: { contains: search, mode: "insensitive" },
     }),
-    ...(category && { categoryId: category }),
+    ...(category && { categoryId: { in: Array.isArray(category) ? category : [category] } }),
+...(tag && { tagId: { in: Array.isArray(tag) ? tag : [tag] } }),
+
     ...(author && { userId: author }),
     ...(date.from || date.to) && {
       createdAt: {
